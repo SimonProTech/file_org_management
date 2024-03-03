@@ -9,20 +9,21 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
 import {
-  File, LogOut, SettingsIcon, UserIcon,
+  File, SettingsIcon, UserIcon,
 } from 'lucide-react';
-import { User } from 'next-auth';
 import HeaderLogout from '@/app/components/HeaderLogout';
+import HeaderOrganization from '@/app/components/HeaderOrganization';
+import { Session } from 'next-auth';
+import Link from 'next/link';
 
-const UserHeader: FC<Omit<User, 'id'>> = ({
-  name, image, email,
-}) => (
-  <div>
+const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => (
+  <div className="flex items-center gap-x-4">
+    <HeaderOrganization role={user?.role as string} />
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Image
-          className="rounded hover:scale-105 transition-all border-white border-2"
-          src={image as string}
+          className="rounded-xl hover:scale-105 transition-all border-white border-2"
+          src={user?.image as string}
           width={40}
           height={40}
           alt="google user icon"
@@ -32,22 +33,24 @@ const UserHeader: FC<Omit<User, 'id'>> = ({
         <DropdownMenuLabel className="p-2 text-md">
           Personal
           {' '}
-          <span className="font-bold text-indigo-600 underline">{name}</span>
+          <span className="font-bold text-indigo-600 underline">{user?.name}</span>
           {' '}
           account
         </DropdownMenuLabel>
         <div className="p-2">
-          <span className="text-[14px] text-indigo-600 font-bold">{email}</span>
+          <span className="text-[14px] text-indigo-600 font-bold">{user?.email}</span>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer hover:bg-indigo-500 hover:text-white p-2 text-md gap-x-2">
           <UserIcon size="20" />
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
-          <File size="20" />
-          Files
-        </DropdownMenuItem>
+        <Link href="/files">
+          <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
+            <File size="20" />
+            Files
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
           <SettingsIcon size="20" />
           Settings
