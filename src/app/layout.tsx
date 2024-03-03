@@ -4,6 +4,7 @@ import './globals.css';
 import ConvexClientProvider from '@/app/ConvexClientProvider';
 import SessionWrapper from '@/app/SessionWrapper';
 import Header from '@/app/components/Header';
+import { Toaster } from '@/components/ui/toaster';
 
 const lato = Lato({ weight: ['300', '400', '700'], subsets: ['latin'] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
             <Header />
             {children}
           </ConvexClientProvider>
+          <Toaster />
         </body>
       </html>
     </SessionWrapper>
