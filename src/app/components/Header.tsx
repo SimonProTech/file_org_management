@@ -19,11 +19,7 @@ const Header = async () => {
           {!session ? (
             <HeaderButtonsComponent />
           ) : (
-            <UserHeader
-              email={session?.user?.email}
-              image={session?.user?.image}
-              name={session?.user?.name}
-            />
+            <UserHeader user={session.user} />
           )}
         </div>
       </div>
