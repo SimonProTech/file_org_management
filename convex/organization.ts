@@ -1,13 +1,22 @@
 import { v } from 'convex/values';
-import { mutation } from './_generated/server';
+import { mutation, query } from './_generated/server';
 
-const createOrg = mutation({
-  args: { orgName: v.string() },
+export const createOrg = mutation({
+  args: {
+    orgName: v.string(),
+    fileId: v.id('_storage'),
+  },
   handler: async (ctx, args) => {
     await ctx.db.insert('organizations', {
-      name: args.orgName,
+      orgName: args.orgName,
+      fileId: args.fileId,
     });
   },
 });
 
-export default createOrg;
+export const getAllOrganization = query({
+  args: {},
+  handler: async (ctx, args) => ctx.db.query('organizations').collect(),
+});
+
+export const generateUploadUrl = mutation(async (ctx) => await ctx.storage.generateUploadUrl());
