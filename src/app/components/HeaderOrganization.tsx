@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, FormEvent, useState } from 'react';
+import React, { FC, useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -13,13 +13,17 @@ import HeaderCreateOrganization from '@/app/components/HeaderCreateOrganization'
 import { useQuery } from 'convex/react';
 import { Button } from '@/components/ui/button';
 import useOrganization from '@/app/store/useOrg';
+import getFileUrl from '@/lib/getUrl';
+import Image from 'next/image';
 import { api } from '../../../convex/_generated/api';
 
 interface IsAdmin {
   role: string;
+  id: string;
+  image: string;
 }
 
-const HeaderOrganization: FC<IsAdmin> = ({ role }) => {
+const HeaderOrganization: FC<IsAdmin> = ({ role, id, image }) => {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const getAllOrganizations = useQuery(api.organization.getAllOrganization);
@@ -28,7 +32,7 @@ const HeaderOrganization: FC<IsAdmin> = ({ role }) => {
   return (
     <>
       <Select
-        defaultValue="personal"
+        defaultValue=""
         open={openSelect}
         onOpenChange={setOpenSelect}
         onValueChange={(value) => addToCart(value)}
@@ -37,24 +41,45 @@ const HeaderOrganization: FC<IsAdmin> = ({ role }) => {
           <SelectValue placeholder="Select organization" />
         </SelectTrigger>
         <SelectContent className="p-2">
-          <SelectItem value="personal">Personal account</SelectItem>
-          {getAllOrganizations?.map(({ orgName, _id }) => (
+          <div className="flex items-center">
+            <Image className="rounded-md" src={image} width={30} height={30} alt="profile picture" />
             <SelectItem
-              key={_id}
-              value={_id}
+              value={id}
             >
-              {orgName}
+              Personal account
             </SelectItem>
+          </div>
+          {getAllOrganizations?.map(({ orgName, _id, fileId }) => (
+            <div className="flex items-center">
+              <Image className="rounded-md" src={getFileUrl(fileId)} width={30} height={30} alt="organization logo" />
+              <SelectItem
+                key={_id}
+                value={_id}
+              >
+                {orgName}
+              </SelectItem>
+            </div>
+
           ))}
-          <Button className="mt-5" onClick={() => setOpenDialog(true)}>
-            <PlusIcon size="20" />
-            Create organization
-          </Button>
+          {role === 'admin' ? (
+            <Button
+              className="mt-5 gap-x-2"
+              onClick={() => {
+                setOpenDialog(true);
+                setOpenSelect(false);
+              }}
+            >
+              <PlusIcon size="20" />
+              Create organization
+            </Button>
+          ) : null}
+
         </SelectContent>
       </Select>
       {openDialog
         ? (
           <HeaderCreateOrganization
+            id={id}
             openDialog={openDialog}
             setOpenDialog={setOpenDialog}
           />
