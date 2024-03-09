@@ -1,22 +1,42 @@
 'use client';
 
-import React from 'react';
+import React, { FC } from 'react';
 import { useQuery } from 'convex/react';
 import useOrganization from '@/app/store/useOrg';
 import Image from 'next/image';
-import FileHeader from '@/app/components/common/FileHeader';
 import UploadFile from '@/app/components/files/UploadFile';
 import { GridIcon, Loader2, RowsIcon } from 'lucide-react';
 import {
   Tabs, TabsContent, TabsList, TabsTrigger,
 } from '@/components/ui/tabs';
 import FIleCard from '@/app/components/files/FIleCard';
+import { useSession } from 'next-auth/react';
+import {
+  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
+} from '@/components/ui/tooltip';
+import useType from '@/app/store/useType';
 import { api } from '../../../../convex/_generated/api';
 
-const AllFiles = () => {
+interface AllFiles {
+  deletedOnly?: boolean;
+  favorite?: boolean;
+}
+
+const AllFiles: FC<AllFiles> = ({ deletedOnly, favorite }) => {
+  const user = useSession();
   const { organizationId } = useOrganization();
-  const allFiles = useQuery(api.files.allFiles, organizationId ? { orgId: organizationId } : 'skip');
+  const { type } = useType();
+
+  const allFiles = useQuery(api.files.allFiles, {
+    orgId:
+        organizationId || user.data?.user.id as string,
+    shouldBeDeleted: deletedOnly,
+    favorite,
+    fileTypeQ: type === 'all' ? undefined : type,
+  });
+
   const isLoading = allFiles === undefined;
+
   return (
     <>
       {isLoading && (
@@ -35,39 +55,47 @@ const AllFiles = () => {
       )}
 
       {allFiles && allFiles.length > 0 && (
-      <>
-        <FileHeader title="All files" />
-        <Tabs defaultValue="grid">
-          <TabsList className="mb-2 w-max">
-            <TabsTrigger value="grid" className="flex gap-2 items-center">
-              <GridIcon />
-              Grid
-            </TabsTrigger>
-            <TabsTrigger value="table" className="flex gap-2 items-center">
-              <RowsIcon />
-              {' '}
-              Table
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="grid">
-            <div className="grid grid-cols-3 gap-4">
-              {allFiles?.map((file) => (
-                <FIleCard
-                  key={file._id}
-                  file={file}
-                />
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </>
+      <Tabs defaultValue="grid">
+        <TabsList className="mb-2 w-max">
+          <TabsTrigger value="grid" className="flex gap-2 items-center">
+            <GridIcon />
+            Grid
+          </TabsTrigger>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className="cursor-not-allowed">
+                <TabsTrigger disabled value="table" className="flex gap-2 items-center">
+                  <RowsIcon />
+                  {' '}
+                  Table
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent sideOffset={20} side="right" className="bg-indigo-600 text-white">
+                <p>Feature in progress</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </TabsList>
+        <TabsContent value="grid">
+          <div className="grid grid-cols-3 gap-4">
+            {allFiles?.map((file) => (
+              <FIleCard
+                key={file._id}
+                file={file}
+                favorite={favorite as boolean}
+              />
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
       )}
     </>
   );
 };
 
-// {allFiles.map((file) => (
-//             <FileHeader title="All files" />
-//             <FIleCard file={file} key={file._id} />
-//             ))}
+AllFiles.defaultProps = {
+  deletedOnly: undefined,
+  favorite: undefined,
+};
+
 export default AllFiles;
