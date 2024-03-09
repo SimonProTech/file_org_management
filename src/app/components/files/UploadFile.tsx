@@ -23,6 +23,7 @@ import useOrganization from '@/app/store/useOrg';
 import { useMutation } from 'convex/react';
 import { toast } from '@/components/ui/use-toast';
 import getFileMimeType from '@/lib/getFileMimeType';
+import { useSession } from 'next-auth/react';
 import { api } from '../../../../convex/_generated/api';
 
 const uploadFileSchema = z.object({
@@ -38,10 +39,11 @@ const uploadFileSchema = z.object({
 });
 
 const UploadFile = () => {
-  const { organizationId } = useOrganization();
   const createFile = useMutation(api.files.createFile);
+  const { organizationId } = useOrganization();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+  const session = useSession();
 
   const form = useForm<z.infer<typeof uploadFileSchema>>({
     resolver: zodResolver(uploadFileSchema),
@@ -69,7 +71,7 @@ const UploadFile = () => {
       await createFile({
         fileName: values.fileName,
         fileId: storageId,
-        orgId: organizationId,
+        orgId: organizationId || session.data?.user.id as string,
         type,
       });
 
