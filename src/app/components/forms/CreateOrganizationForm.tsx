@@ -17,6 +17,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from 'convex/react';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
+import { ConvexError } from 'convex/values';
+import React from 'react';
 import { api } from '../../../../convex/_generated/api';
 
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -24,14 +26,17 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
   'image/jpg',
   'image/png',
   'image/webp',
+  'image/svg+xml',
 ];
 
 const formSchema = z.object({
-  orgImage: z.instanceof(FileList)
-    .refine(
-      (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
-      'Only .jpg, .jpeg, .png and .webp formats are supported.',
-    ),
+  orgImage:
+    z
+      .custom<FileList>((val) => val instanceof FileList, 'File is required')
+      .refine(
+        (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+        'Only .jpg, .jpeg, .png and .webp formats are supported.',
+      ),
   orgName: z.string().min(3, {
     message: 'Organization name is too short',
   }).max(50, {
@@ -39,7 +44,7 @@ const formSchema = z.object({
   }),
 });
 
-const CreateOrganizationForm = ({ setOpenDialog }: {setOpenDialog: (x: boolean) => void}) => {
+const CreateOrganizationForm = ({ setOpenDialog, id }: {setOpenDialog: (x: boolean) => void, id: string}) => {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,10 +67,10 @@ const CreateOrganizationForm = ({ setOpenDialog }: {setOpenDialog: (x: boolean) 
         body: values.orgImage[0],
       });
       const { storageId } = await result.json();
-
       await createOrg({
         orgName: values.orgName,
         fileId: storageId,
+        adminId: id,
       });
 
       form.reset();
@@ -78,6 +83,13 @@ const CreateOrganizationForm = ({ setOpenDialog }: {setOpenDialog: (x: boolean) 
         description: 'Organization created successfully',
       });
     } catch (error) {
+      if (error instanceof ConvexError) {
+        return toast({
+          variant: 'destructive',
+          title: 'Organization error',
+          description: error.data,
+        });
+      }
       toast({
         variant: 'destructive',
         title: 'Organization error',
@@ -119,9 +131,13 @@ const CreateOrganizationForm = ({ setOpenDialog }: {setOpenDialog: (x: boolean) 
             </FormItem>
           )}
         />
-        <Button disabled={form.formState.isLoading} type="submit">
-          {form.formState.isLoading && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting}
+          className="flex gap-1"
+        >
+          {form.formState.isSubmitting && (
+          <Loader2 className="h-4 w-4 animate-spin" />
           )}
           Submit
         </Button>
