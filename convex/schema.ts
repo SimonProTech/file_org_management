@@ -5,11 +5,29 @@ export default defineSchema({
   organizations: defineTable({
     fileId: v.id('_storage'),
     orgName: v.string(),
-  }),
+    adminId: v.string(),
+  }).index('by_orgName', ['orgName']),
   files: defineTable({
     fileName: v.string(),
     orgId: v.string(),
     type: v.string(),
     fileId: v.id('_storage'),
-  }).index('by_orgId', ['orgId']),
+    shouldBeDeleted: v.optional(v.boolean()),
+    fileTypeQ: v.optional(v.string()),
+  }).index('by_orgId', ['orgId'])
+    .index('by_shouldBeDeleted', ['shouldBeDeleted']),
+  users: defineTable({
+    userId: v.string(),
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    orgIds: v.array(v.object({
+      orgId: v.string(),
+      role: v.string(),
+    })),
+  }).index('by_userId', ['userId']),
+  favorite: defineTable({
+    orgId: v.string(),
+    userId: v.string(),
+    fileId: v.id('_storage'),
+  }).index('by_orgId_userId_fileId', ['orgId', 'fileId', 'userId']),
 });
