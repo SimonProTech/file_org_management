@@ -7,6 +7,7 @@ import UserHeader from '@/app/components/UserHeader';
 import options from '@/app/api/auth/[...nextauth]/options';
 
 const Header = async () => {
+  console.log('TEST');
   const session = await getServerSession(options);
   return (
     <div className="p-2 fixed left-1/2 max-w-lg w-full z-[99999] -translate-x-1/2">
