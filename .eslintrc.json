@@ -16,7 +16,7 @@
       "jsx": true
     },
     "ecmaVersion": 12,
-    "project": "tsconfig.json",
+    "project": "./tsconfig.json", // Poprawiona ścieżka do pliku tsconfig.json
     "sourceType": "module"
   },
   "plugins": [
@@ -36,10 +36,11 @@
       ],
       "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"],
+        "plugin:@typescript-eslint/recommended"
+      ],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
-        "project": ["**/tsconfig.json"]
+        "project": "./tsconfig.json" // Poprawiona ścieżka do pliku tsconfig.json
       },
       "rules": {
         "@typescript-eslint/camelcase": "off"
@@ -47,14 +48,14 @@
     }
   ],
   "rules": {
-    "react/jsx-filename-extension": 0,
-    "no-param-reassign": 0,
-    "jsx-a11y/anchor-is-valid": 0,
-    "no-underscore-dangle": 0,
-    "max-lines-per-function": 0,
-    "default-param-last": 0,
-    "react/forbid-prop-types": 0,
-    "react/prop-types": 0,
+    "react/jsx-filename-extension": "off", // Użyj stringa "off" zamiast 0
+    "no-param-reassign": "off", // Użyj stringa "off" zamiast 0
+    "jsx-a11y/anchor-is-valid": "off", // Użyj stringa "off" zamiast 0
+    "no-underscore-dangle": "off", // Użyj stringa "off" zamiast 0
+    "max-lines-per-function": "off", // Użyj stringa "off" zamiast 0
+    "default-param-last": "off", // Użyj stringa "off" zamiast 0
+    "react/forbid-prop-types": "off", // Użyj stringa "off" zamiast 0
+    "react/prop-types": "off", // Użyj stringa "off" zamiast 0
     "camelcase": "off",
     "import/extensions": ["off", {
       "extension": "off"
@@ -64,7 +65,7 @@
     "@typescript-eslint/no-shadow": "warn",
     "import/no-extraneous-dependencies": "off",
     "react/react-in-jsx-scope": "off",
-    "react/function-component-definition": 0,
+    "react/function-component-definition": "off", // Użyj stringa "off" zamiast 0
     "jsx-a11y/label-has-associated-control": ["error", {
       "required": {
         "some": ["nesting", "id"]
