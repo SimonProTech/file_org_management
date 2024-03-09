@@ -52,9 +52,9 @@ const AddUserMemberForm = () => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Organization name</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Organization name" {...field} />
+                  <Input placeholder="Name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
