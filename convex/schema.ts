@@ -16,15 +16,6 @@ export default defineSchema({
     fileTypeQ: v.optional(v.string()),
   }).index('by_orgId', ['orgId'])
     .index('by_shouldBeDeleted', ['shouldBeDeleted']),
-  users: defineTable({
-    userId: v.string(),
-    name: v.optional(v.string()),
-    image: v.optional(v.string()),
-    orgIds: v.array(v.object({
-      orgId: v.string(),
-      role: v.string(),
-    })),
-  }).index('by_userId', ['userId']),
   favorite: defineTable({
     orgId: v.string(),
     userId: v.string(),
