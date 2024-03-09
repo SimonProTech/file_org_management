@@ -6,7 +6,7 @@ type Organization = {
 }
 
 const useOrganization = create<Organization>((set) => ({
-  organizationId: 'personal',
+  organizationId: '',
   setOrganization: (org) => set(() => ({ organizationId: org })),
 }));
 
