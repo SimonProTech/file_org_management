@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
 import {
+  Bell,
   File, SettingsIcon, Users2Icon,
 } from 'lucide-react';
 import HeaderLogout from '@/app/components/HeaderLogout';
@@ -21,6 +22,7 @@ import useOrganization from '@/app/store/useOrg';
 import { useQuery } from 'convex/react';
 import HeaderIsAdminAddMembers from '@/app/components/HeaderIsAdminAddMembers';
 import { api } from '../../../convex/_generated/api';
+import { Id } from '../../../convex/_generated/dataModel';
 
 const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
   const [sheetOpen, setSheetOpen] = useState<boolean>(false);
@@ -80,7 +82,8 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
           <HeaderLogout />
         </DropdownMenuContent>
       </DropdownMenu>
-      <HeaderIsAdminAddMembers setSheetOpen={setSheetOpen} sheetOpen={sheetOpen} />
+      <Bell className="cursor-pointer" />
+      <HeaderIsAdminAddMembers organizationId={organizationId as Id<'organizations'>} setSheetOpen={setSheetOpen} sheetOpen={sheetOpen} />
     </div>
   );
 };
