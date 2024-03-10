@@ -18,8 +18,9 @@ export default defineSchema({
     .index('by_shouldBeDeleted', ['shouldBeDeleted']),
   users: defineTable({
     userId: v.string(),
-    name: v.optional(v.string()),
-    email: v.string(),
+    userName: v.string(),
+    userEmail: v.string(),
+    userImage: v.string(),
     role: v.string(),
   }).index('by_userId', ['userId']),
   favorite: defineTable({
