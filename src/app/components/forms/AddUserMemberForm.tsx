@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,6 +19,12 @@ import {
   FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
+import { useMutation } from 'convex/react';
+import { Session } from 'next-auth';
+import { toast } from '@/components/ui/use-toast';
+import { Loader2 } from 'lucide-react';
+import { api } from '../../../../convex/_generated/api';
+import { Id } from '../../../../convex/_generated/dataModel';
 
 enum Roles {
   admin = 'admin',
@@ -29,7 +37,13 @@ const addMemberSchema = z.object({
   role: z.enum(['admin', 'user']).default('user'),
 });
 
-const AddUserMemberForm = () => {
+interface AddUserMemberFormProps {
+    organizationId: Id<'organizations'>;
+}
+
+const AddUserMemberForm: FC<AddUserMemberFormProps> = ({ organizationId }) => {
+  const createUserAndAddToOrganization = useMutation(api.user.createUserAndAddToOrganization);
+
   const form = useForm<z.infer<typeof addMemberSchema>>({
     resolver: zodResolver(addMemberSchema),
     defaultValues: {
@@ -40,7 +54,27 @@ const AddUserMemberForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof addMemberSchema>) => {
-    console.log(values);
+    try {
+      await createUserAndAddToOrganization({
+        userName: values.name,
+        orgId: organizationId,
+        role: values.role,
+        userEmail: values.email,
+      });
+
+      form.reset();
+
+      toast({
+        variant: 'success',
+        description: 'User was successfully added to organization',
+      });
+    } catch (e) {
+      console.log(e);
+      toast({
+        variant: 'destructive',
+        description: 'There was an error on the organization',
+      });
+    }
   };
 
   return (
@@ -98,7 +132,16 @@ const AddUserMemberForm = () => {
             )}
           />
         </div>
-        <Button type="submit">Add new member</Button>
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting}
+          className="flex gap-1"
+        >
+          {form.formState.isSubmitting && (
+          <Loader2 className="h-4 w-4 animate-spin" />
+          )}
+          Add new member
+        </Button>
       </form>
     </Form>
 
