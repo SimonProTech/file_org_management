@@ -54,7 +54,7 @@ const HeaderIsAdminAddMembers: FC<HeaderIsAdminAddMembersProps> = ({ setSheetOpe
           </Label>
           <Select>
             <SelectTrigger className="col-span-3">
-              <SelectValue placeholder="Select a fruit" />
+              <SelectValue placeholder="Select a role" />
             </SelectTrigger>
             <SelectContent className="col-span-4">
               <SelectGroup>
