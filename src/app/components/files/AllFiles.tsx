@@ -18,11 +18,11 @@ import useType from '@/app/store/useType';
 import { api } from '../../../../convex/_generated/api';
 
 interface AllFiles {
-  deletedOnly?: boolean;
-  favorite?: boolean;
+  deletedOnly: boolean;
+  favorite: boolean;
 }
 
-const AllFiles: FC<AllFiles> = ({ deletedOnly, favorite }) => {
+const AllFiles: FC<AllFiles> = ({ deletedOnly = undefined, favorite = undefined }) => {
   const user = useSession();
   const { organizationId } = useOrganization();
   const { type } = useType();
@@ -91,11 +91,6 @@ const AllFiles: FC<AllFiles> = ({ deletedOnly, favorite }) => {
       )}
     </>
   );
-};
-
-AllFiles.defaultProps = {
-  deletedOnly: undefined,
-  favorite: undefined,
 };
 
 export default AllFiles;
