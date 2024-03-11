@@ -52,7 +52,7 @@ const HeaderOrganization: FC<IsAdmin> = ({
               Personal account
             </SelectItem>
           </div>
-          {getAllOrganizations?.map(({ orgName, _id, fileId }) => (
+          {getAllOrganizations && getAllOrganizations?.map(({ orgName, _id, fileId }) => (
             <div className="flex items-center">
               <Image className="rounded-md" src={getFileUrl(fileId)} width={30} height={30} alt="organization logo" />
               <SelectItem
