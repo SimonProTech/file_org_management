@@ -14,11 +14,12 @@ interface HeaderCreateOrganizationProps {
     openDialog: boolean;
     setOpenDialog: (x: boolean) => void;
     id: string;
+    adminName: string;
 }
 
 const HeaderCreateOrganization:
     FC<HeaderCreateOrganizationProps> = ({
-      setOpenDialog, openDialog, id,
+      setOpenDialog, openDialog, id, adminName,
     }) => (
       <Dialog
         onOpenChange={setOpenDialog}
@@ -28,7 +29,7 @@ const HeaderCreateOrganization:
           <DialogHeader>
             <DialogTitle className="text-3xl font-bold mb-5">Create Organization</DialogTitle>
           </DialogHeader>
-          <CreateOrganizationForm id={id} setOpenDialog={setOpenDialog} />
+          <CreateOrganizationForm adminName={adminName} id={id} setOpenDialog={setOpenDialog} />
         </DialogContent>
       </Dialog>
     );
