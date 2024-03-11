@@ -87,7 +87,11 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
           <HeaderLogout />
         </DropdownMenuContent>
       </DropdownMenu>
-      <BellIconWithNotificationComponent userId={user.id} userEmail={user.email as string} />
+      <BellIconWithNotificationComponent
+        userGoogleId={user.id as Id<'user'>}
+        userImage={user.image as string}
+        userEmail={user.email as string}
+      />
       <HeaderIsAdminAddMembers organizationId={organizationId as Id<'organizations'>} setSheetOpen={setSheetOpen} sheetOpen={sheetOpen} />
     </div>
   );
