@@ -99,13 +99,13 @@ const FIleCard = ({ file, favorite }: {file: Doc<'files'>; favorite: boolean}) =
         {file.type === 'pdf' && <FileTextIcon className="w-20 h-32" />}
         {(file.type === 'csv' || file.type === 'xlsx') && <FileTextIcon className="w-20 h-32" />}
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex pt-5 justify-between">
         <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
-          <Avatar className="w-6 h-6">
-            <AvatarImage src="" />
-            <AvatarFallback>CN</AvatarFallback>
+          <Avatar className="w-6 h-6 relative">
+            <AvatarImage src={data?.user.image as string} />
+            <AvatarFallback>{data?.user.name?.slice(0, 2)}</AvatarFallback>
           </Avatar>
-          simon
+          {data?.user.name}
         </div>
         <div className="text-xs text-gray-700">
           Uploaded on
