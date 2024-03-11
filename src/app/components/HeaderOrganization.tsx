@@ -21,9 +21,12 @@ interface IsAdmin {
   role: string;
   id: string;
   image: string;
+  adminName: string;
 }
 
-const HeaderOrganization: FC<IsAdmin> = ({ role, id, image }) => {
+const HeaderOrganization: FC<IsAdmin> = ({
+  role, id, image, adminName,
+}) => {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const getAllOrganizations = useQuery(api.organization.getAllOrganization);
@@ -81,6 +84,7 @@ const HeaderOrganization: FC<IsAdmin> = ({ role, id, image }) => {
           <HeaderCreateOrganization
             id={id}
             openDialog={openDialog}
+            adminName={adminName}
             setOpenDialog={setOpenDialog}
           />
         ) : null}
