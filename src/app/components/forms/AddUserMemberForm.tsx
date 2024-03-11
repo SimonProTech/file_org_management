@@ -69,7 +69,6 @@ const AddUserMemberForm: FC<AddUserMemberFormProps> = ({ organizationId }) => {
         description: 'User was successfully added to organization',
       });
     } catch (e) {
-      console.log(e);
       toast({
         variant: 'destructive',
         description: 'There was an error on the organization',
