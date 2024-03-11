@@ -6,6 +6,7 @@ export const generateUploadUrl = mutation(async (ctx) => await ctx.storage.gener
 export const createOrg = mutation({
   args: {
     orgName: v.string(),
+    adminName: v.string(),
     fileId: v.id('_storage'),
     adminId: v.string(),
 
@@ -22,6 +23,7 @@ export const createOrg = mutation({
       orgName: args.orgName,
       fileId: args.fileId,
       adminId: args.adminId,
+      adminName: args.adminName,
     });
   },
 });

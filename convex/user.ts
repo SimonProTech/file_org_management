@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { mutation } from './_generated/server';
+import { mutation, query } from './_generated/server';
 
 export const createUserAndAddToOrganization = mutation({
   args: {
@@ -17,5 +17,23 @@ export const createUserAndAddToOrganization = mutation({
     userImage: args.userImage || '',
     role: args.role,
     userEmail: args.userEmail,
+    joinedOrg: false,
   }),
+});
+
+export const getUserAddedToOrganization = query({
+  args: {
+    userId: v.string(),
+    userEmail: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const findUser = await
+    ctx.db
+      .query('user')
+      .withIndex(
+        'by_userEmail',
+        (q) => q.eq('userEmail', args.userEmail),
+      ).collect();
+    return findUser;
+  },
 });

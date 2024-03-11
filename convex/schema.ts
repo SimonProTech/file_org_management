@@ -6,6 +6,7 @@ export default defineSchema({
     fileId: v.id('_storage'),
     orgName: v.string(),
     adminId: v.string(),
+    adminName: v.string(),
   }).index('by_orgName', ['orgName']),
   files: defineTable({
     fileName: v.string(),
@@ -22,8 +23,9 @@ export default defineSchema({
     userName: v.string(),
     userEmail: v.string(),
     userImage: v.string(),
+    joinedOrg: v.boolean(),
     role: v.string(),
-  }).index('by_userId', ['userId']),
+  }).index('by_userEmail', ['userEmail']),
   favorite: defineTable({
     orgId: v.string(),
     userId: v.string(),
