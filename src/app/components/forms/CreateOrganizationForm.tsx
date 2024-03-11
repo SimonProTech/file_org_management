@@ -44,7 +44,7 @@ const formSchema = z.object({
   }),
 });
 
-const CreateOrganizationForm = ({ setOpenDialog, id }: {setOpenDialog: (x: boolean) => void, id: string}) => {
+const CreateOrganizationForm = ({ setOpenDialog, id, adminName }: {setOpenDialog: (x: boolean) => void, id: string, adminName: string}) => {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,6 +71,7 @@ const CreateOrganizationForm = ({ setOpenDialog, id }: {setOpenDialog: (x: boole
         orgName: values.orgName,
         fileId: storageId,
         adminId: id,
+        adminName,
       });
 
       form.reset();
