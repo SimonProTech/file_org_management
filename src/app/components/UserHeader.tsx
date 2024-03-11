@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
 import {
-  Bell,
   File, SettingsIcon, Users2Icon,
 } from 'lucide-react';
 import HeaderLogout from '@/app/components/HeaderLogout';
@@ -21,6 +20,7 @@ import Link from 'next/link';
 import useOrganization from '@/app/store/useOrg';
 import { useQuery } from 'convex/react';
 import HeaderIsAdminAddMembers from '@/app/components/HeaderIsAdminAddMembers';
+import BellIconWithNotificationComponent from '@/app/components/BellIconWithNotificationComponent';
 import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
 
@@ -37,7 +37,12 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
 
   return (
     <div className="flex items-center gap-x-4">
-      <HeaderOrganization image={user.image as string} id={user.id} role={user?.role as string} />
+      <HeaderOrganization
+        adminName={user.name as string}
+        image={user.image as string}
+        id={user.id}
+        role={user?.role as string}
+      />
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Image
@@ -82,7 +87,7 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
           <HeaderLogout />
         </DropdownMenuContent>
       </DropdownMenu>
-      <Bell className="cursor-pointer" />
+      <BellIconWithNotificationComponent userId={user.id} userEmail={user.email as string} />
       <HeaderIsAdminAddMembers organizationId={organizationId as Id<'organizations'>} setSheetOpen={setSheetOpen} sheetOpen={sheetOpen} />
     </div>
   );
