@@ -1,5 +1,7 @@
 import { v } from 'convex/values';
+import { ExpressionOrValue } from 'convex/server';
 import { mutation, query } from './_generated/server';
+import { Id } from './_generated/dataModel';
 
 export const createUserAndAddToOrganization = mutation({
   args: {
@@ -23,17 +25,32 @@ export const createUserAndAddToOrganization = mutation({
 
 export const getUserAddedToOrganization = query({
   args: {
-    userId: v.string(),
     userEmail: v.string(),
   },
   handler: async (ctx, args) => {
-    const findUser = await
-    ctx.db
-      .query('user')
-      .withIndex(
-        'by_userEmail',
-        (q) => q.eq('userEmail', args.userEmail),
-      ).collect();
-    return findUser;
+    const all = await ctx.db.query('user').filter((q) => q.eq(q.field('userEmail'), args.userEmail)).filter((q) => q.eq(q.field('joinedOrg'), false)).collect();
+
+    const promisedAllData = all.map(async (org) => {
+      const organization = await ctx.db.query('organizations').filter((q) => q.eq(q.field('_id'), org.orgId)).first();
+
+      return {
+        ...org,
+        organization,
+      };
+    });
+    return Promise.all(promisedAllData);
   },
+});
+
+export const joinOrganization = mutation({
+  args: {
+    id: v.id('user'),
+    userId: v.string(),
+    userImage: v.string(),
+  },
+  handler: async (ctx, args) => ctx.db.patch(args.id, {
+    joinedOrg: true,
+    userId: args.userId,
+    userImage: args.userImage,
+  }),
 });

@@ -40,5 +40,9 @@ export const getOrganization = query({
 
 export const getAllOrganization = query({
   args: {},
-  handler: async (ctx, args) => ctx.db.query('organizations').collect(),
+  handler: async (ctx, args) => {
+    const allOrg = await ctx.db.query('organizations').collect();
+
+    return allOrg;
+  },
 });
