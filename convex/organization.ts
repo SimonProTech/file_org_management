@@ -39,10 +39,20 @@ export const getOrganization = query({
 });
 
 export const getAllOrganization = query({
-  args: {},
+  args: {
+    userId: v.string(),
+  },
   handler: async (ctx, args) => {
-    const allOrg = await ctx.db.query('organizations').collect();
+    const users = await ctx.db.query('user').filter((q) => q.eq(q.field('userId'), args.userId)).filter((q) => q.eq(q.field('joinedOrg'), true)).collect();
 
-    return allOrg;
+    const orgIds = users.map((user) => user.orgId);
+    const uniqueOrgIds = [...new Set(orgIds)];
+
+    const organizations = await Promise.all(uniqueOrgIds.map(async (orgId) => {
+      const org = await ctx.db.query('organizations').filter((q) => q.eq(q.field('_id'), orgId)).first();
+      return org;
+    }));
+
+    return organizations.filter((org) => org !== undefined);
   },
 });

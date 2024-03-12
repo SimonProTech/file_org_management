@@ -16,6 +16,7 @@ import useOrganization from '@/app/store/useOrg';
 import getFileUrl from '@/lib/getUrl';
 import Image from 'next/image';
 import { api } from '../../../convex/_generated/api';
+import { Doc } from '../../../convex/_generated/dataModel';
 
 interface IsAdmin {
   role: string;
@@ -29,7 +30,10 @@ const HeaderOrganization: FC<IsAdmin> = ({
 }) => {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const getAllOrganizations = useQuery(api.organization.getAllOrganization);
+  const getAllOrganizations = useQuery(api.organization.getAllOrganization, {
+    userId: id,
+  });
+
   const addToCart = useOrganization((state) => state.setOrganization);
 
   return (
@@ -52,7 +56,7 @@ const HeaderOrganization: FC<IsAdmin> = ({
               Personal account
             </SelectItem>
           </div>
-          {getAllOrganizations && getAllOrganizations?.map(({ orgName, _id, fileId }) => (
+          {getAllOrganizations && (getAllOrganizations as Doc<'organizations'>[])?.map(({ orgName, _id, fileId }) => (
             <div className="flex items-center">
               <Image className="rounded-md" src={getFileUrl(fileId)} width={30} height={30} alt="organization logo" />
               <SelectItem
