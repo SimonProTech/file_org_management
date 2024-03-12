@@ -44,11 +44,11 @@ export const getUserAddedToOrganization = query({
 
 export const joinOrganization = mutation({
   args: {
-    id: v.id('user'),
+    objId: v.id('user'),
     userId: v.string(),
     userImage: v.string(),
   },
-  handler: async (ctx, args) => ctx.db.patch(args.id, {
+  handler: async (ctx, args) => ctx.db.patch(args.objId, {
     joinedOrg: true,
     userId: args.userId,
     userImage: args.userImage,
