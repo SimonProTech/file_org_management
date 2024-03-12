@@ -33,9 +33,9 @@ const BellIconWithNotificationComponent:
       const joinOrg = async (id: Id<'user'>) => {
         try {
           await joinOrganization({
-            userId: id,
-            id: userGoogleId,
+            objId: id,
             userImage,
+            userId: userGoogleId,
           });
 
           setOpenDrawer(false);
@@ -69,9 +69,11 @@ const BellIconWithNotificationComponent:
               <DrawerTitle className="text-indigo-600 text-2xl">Notifications</DrawerTitle>
             </DrawerHeader>
             <div className="pb-10">
-              {getUserAddedToOrganization?.map((user) => (
+              {getUserAddedToOrganization?.length === 0 ? (
+                <p>There are no new notifications.</p>
+              ) : getUserAddedToOrganization?.map((user) => (
                 <div className="flex gap-x-2 items-center">
-                  <p>
+                  <p className="list-item list-inside">
                     You have been invited to the
                     {' '}
                     <span className="font-bold text-indigo-600">{user?.organization?.orgName}</span>
