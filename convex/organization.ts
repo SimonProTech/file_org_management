@@ -53,6 +53,9 @@ export const getAllOrganization = query({
       return org;
     }));
 
-    return organizations.filter((org) => org !== undefined);
+    if (organizations.length > 0) {
+      return organizations.filter((org) => org !== undefined);
+    }
+    return ctx.db.query('organizations').filter((q) => q.eq(q.field('adminId'), args.userId)).collect();
   },
 });
