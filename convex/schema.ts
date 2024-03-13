@@ -12,6 +12,8 @@ export default defineSchema({
     fileName: v.string(),
     orgId: v.string(),
     type: v.string(),
+    fileAuthor: v.string(),
+    fileAuthorImage: v.string(),
     fileId: v.id('_storage'),
     shouldBeDeleted: v.optional(v.boolean()),
     fileTypeQ: v.optional(v.string()),
@@ -31,4 +33,10 @@ export default defineSchema({
     userId: v.string(),
     fileId: v.id('_storage'),
   }).index('by_orgId_userId_fileId', ['orgId', 'fileId', 'userId']),
+  notifications: defineTable({
+    orgId: v.id('organizations'),
+    userId: v.string(),
+    message: v.string(),
+    wasRead: v.boolean(),
+  }),
 });
