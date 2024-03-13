@@ -25,6 +25,7 @@ import { toast } from '@/components/ui/use-toast';
 import getFileMimeType from '@/lib/getFileMimeType';
 import { useSession } from 'next-auth/react';
 import { api } from '../../../../convex/_generated/api';
+import { Id } from '../../../../convex/_generated/dataModel';
 
 const uploadFileSchema = z.object({
   file: z
@@ -40,6 +41,7 @@ const uploadFileSchema = z.object({
 
 const UploadFile = () => {
   const createFile = useMutation(api.files.createFile);
+  const createNotification = useMutation(api.notifications.createNotification);
   const { organizationId } = useOrganization();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
@@ -72,8 +74,18 @@ const UploadFile = () => {
         fileName: values.fileName,
         fileId: storageId,
         orgId: organizationId || session.data?.user.id as string,
+        fileAuthor: session.data?.user.name as string,
+        fileAuthorImage: session.data?.user.image as string,
         type,
       });
+
+      if (organizationId) {
+        await createNotification({
+          orgId: organizationId as Id<'organizations'>,
+          userId: session.data?.user.id as string,
+          message: 'Hey, someone has added a new file to organization you are part of.',
+        });
+      }
 
       form.reset();
 
