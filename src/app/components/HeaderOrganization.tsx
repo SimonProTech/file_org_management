@@ -57,10 +57,9 @@ const HeaderOrganization: FC<IsAdmin> = ({
             </SelectItem>
           </div>
           {getAllOrganizations && (getAllOrganizations as Doc<'organizations'>[])?.map(({ orgName, _id, fileId }) => (
-            <div className="flex items-center">
+            <div key={_id} className="flex items-center">
               <Image className="rounded-md" src={getFileUrl(fileId)} width={30} height={30} alt="organization logo" />
               <SelectItem
-                key={_id}
                 value={_id}
               >
                 {orgName}
