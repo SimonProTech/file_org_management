@@ -10,8 +10,9 @@ import {
 } from '@/components/ui/drawer';
 import { Bell } from 'lucide-react';
 import { useMutation, useQuery } from 'convex/react';
-import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import useOrganization from '@/app/store/useOrg';
+import AddedToNewOrganizationNotification from '@/app/components/notifications/AddedToNewOrganizationNotification';
 import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
 
@@ -23,9 +24,16 @@ interface BellIconWithNotificationComponentProps {
 
 const BellIconWithNotificationComponent:
     FC<BellIconWithNotificationComponentProps> = ({ userEmail, userImage, userGoogleId }) => {
+      const { organizationId } = useOrganization();
       const [openDrawer, setOpenDrawer] = useState(false);
       const getUserAddedToOrganization = useQuery(api.user.getUserAddedToOrganization, {
         userEmail,
+      });
+      const readNotifications = useMutation(api.notifications.markNotificationAsReaded);
+
+      const getNotifications = useQuery(api.notifications.getNotifications, {
+        userId: userGoogleId,
+        orgId: organizationId,
       });
 
       const joinOrganization = useMutation(api.user.joinOrganization);
@@ -45,7 +53,6 @@ const BellIconWithNotificationComponent:
             description: 'You joined the organization',
           });
         } catch (err) {
-          console.log(err);
           toast({
             variant: 'destructive',
             description: 'Error while joining the organization',
@@ -56,12 +63,13 @@ const BellIconWithNotificationComponent:
       return (
         <Drawer open={openDrawer} onOpenChange={setOpenDrawer} activeSnapPoint={50} direction="bottom">
           <DrawerTrigger className="relative flex items-center">
-            {getUserAddedToOrganization && getUserAddedToOrganization.length > 0 ? (
-              <>
-                <span className="animate-ping bg-gray-700 absolute inline-flex right-0 w-3 -top-1 h-3 rounded-full opacity-75" />
-                <span className="absolute right-0 -top-1 inline-flex rounded-full h-3 w-3 bg-indigo-600" />
-              </>
-            ) : null}
+            {/* {(getNotifications && getNotifications.length > 0) */}
+            {/* || (getUserAddedToOrganization && getUserAddedToOrganization.length > 0) ? ( */}
+            {/*  <> */}
+            {/*    <span className="animate-ping bg-gray-700 absolute inline-flex right-0 w-3 -top-1 h-3 rounded-full opacity-75" /> */}
+            {/*    <span className="absolute right-0 -top-1 inline-flex rounded-full h-3 w-3 bg-indigo-600" /> */}
+            {/*  </> */}
+            {/*  ) : null} */}
             <Bell className="cursor-pointer" />
           </DrawerTrigger>
           <DrawerContent className="p-5">
@@ -69,22 +77,19 @@ const BellIconWithNotificationComponent:
               <DrawerTitle className="text-indigo-600 text-2xl">Notifications</DrawerTitle>
             </DrawerHeader>
             <div className="pb-10">
-              {getUserAddedToOrganization?.length === 0 ? (
-                <p>There are no new notifications.</p>
-              ) : getUserAddedToOrganization?.map((user) => (
-                <div className="flex gap-x-2 items-center">
-                  <p className="list-item list-inside">
-                    You have been invited to the
-                    {' '}
-                    <span className="font-bold text-indigo-600">{user?.organization?.orgName}</span>
-                    {' '}
-                    organization by
-                    {' '}
-                    <span className="font-bold underline">{user?.organization?.adminName}</span>
-                  </p>
-                  <Button onClick={() => joinOrg(user._id)} className="bg-orange-500 hover:bg-orange-600">Join now</Button>
-                </div>
-              ))}
+              {getUserAddedToOrganization && getUserAddedToOrganization.length > 0 ? (
+                getUserAddedToOrganization.map((user) => (
+                  <AddedToNewOrganizationNotification
+                    joinOrg={() => joinOrg(user._id)}
+                    adminName={user?.organization?.adminName as string}
+                    orgName={user?.organization?.orgName as string}
+                    _id={user._id}
+                  />
+                ))
+              ) : null}
+              {getNotifications && getNotifications.length > 0 ? (
+                getNotifications.map(() => (<p>xd</p>))
+              ) : null}
             </div>
           </DrawerContent>
         </Drawer>
