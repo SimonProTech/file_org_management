@@ -6,16 +6,18 @@ export const createFile = mutation({
     fileName: v.string(),
     orgId: v.string(),
     fileId: v.id('_storage'),
+    fileAuthor: v.string(),
+    fileAuthorImage: v.string(),
     type: v.string(),
   },
-  handler: async (ctx, args) => {
-    await ctx.db.insert('files', {
-      fileName: args.fileName,
-      fileId: args.fileId,
-      orgId: args.orgId,
-      type: args.type,
-    });
-  },
+  handler: async (ctx, args) => ctx.db.insert('files', {
+    fileName: args.fileName,
+    fileId: args.fileId,
+    orgId: args.orgId,
+    type: args.type,
+    fileAuthor: args.fileAuthor,
+    fileAuthorImage: args.fileAuthorImage,
+  }),
 });
 
 export const allFiles = query({
