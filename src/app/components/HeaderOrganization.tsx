@@ -14,7 +14,8 @@ import { useQuery } from 'convex/react';
 import { Button } from '@/components/ui/button';
 import useOrganization from '@/app/store/useOrg';
 import getFileUrl from '@/lib/getUrl';
-import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import randomColorPick from '@/lib/randomColorPick';
 import { api } from '../../../convex/_generated/api';
 import { Doc } from '../../../convex/_generated/dataModel';
 
@@ -49,7 +50,10 @@ const HeaderOrganization: FC<IsAdmin> = ({
         </SelectTrigger>
         <SelectContent className="p-2">
           <div className="flex items-center">
-            <Image className="rounded-md" src={image} width={30} height={30} alt="profile picture" />
+            <Avatar>
+              <AvatarImage width={30} height={30} src={image} alt="@shadcn" />
+              <AvatarFallback className={`${randomColorPick()} text-white`}>{}</AvatarFallback>
+            </Avatar>
             <SelectItem
               value={id}
             >
@@ -57,8 +61,11 @@ const HeaderOrganization: FC<IsAdmin> = ({
             </SelectItem>
           </div>
           {getAllOrganizations && (getAllOrganizations as Doc<'organizations'>[])?.map(({ orgName, _id, fileId }) => (
-            <div key={_id} className="flex items-center">
-              <Image className="rounded-md" src={getFileUrl(fileId)} width={30} height={30} alt="organization logo" />
+            <div key={_id} className="flex items-center mt-2">
+              <Avatar>
+                <AvatarImage width={30} height={30} src={getFileUrl(fileId)} alt="@shadcn" />
+                <AvatarFallback className={`${randomColorPick()} text-white`}>{orgName.slice(0, 2)}</AvatarFallback>
+              </Avatar>
               <SelectItem
                 value={_id}
               >
