@@ -91,7 +91,7 @@ const UploadFile = () => {
         });
       });
 
-      if (organizationId) {
+      if (organizationId && Number.isNaN(+organizationId)) {
         await createNotification({
           orgId: organizationId as Id<'organizations'>,
           users,
