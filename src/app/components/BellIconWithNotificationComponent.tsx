@@ -13,6 +13,8 @@ import { useMutation, useQuery } from 'convex/react';
 import { toast } from '@/components/ui/use-toast';
 import useOrganization from '@/app/store/useOrg';
 import AddedToNewOrganizationNotification from '@/app/components/notifications/AddedToNewOrganizationNotification';
+import NewFileNotification from '@/app/components/notifications/NewFileNotification';
+import NotFoundNotification from '@/app/components/notifications/NotFoundNotification';
 import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
 
@@ -29,7 +31,6 @@ const BellIconWithNotificationComponent:
       const getUserAddedToOrganization = useQuery(api.user.getUserAddedToOrganization, {
         userEmail,
       });
-      const readNotifications = useMutation(api.notifications.markNotificationAsReaded);
 
       const getNotifications = useQuery(api.notifications.getNotifications, {
         userId: userGoogleId,
@@ -60,16 +61,20 @@ const BellIconWithNotificationComponent:
         }
       };
 
+      const getNotificationsValidation = getNotifications
+          && getNotifications
+            .filter((x) => x.users.some((user) => user.wasRead === false)).length > 0;
+
       return (
         <Drawer open={openDrawer} onOpenChange={setOpenDrawer} activeSnapPoint={50} direction="bottom">
           <DrawerTrigger className="relative flex items-center">
-            {/* {(getNotifications && getNotifications.length > 0) */}
-            {/* || (getUserAddedToOrganization && getUserAddedToOrganization.length > 0) ? ( */}
-            {/*  <> */}
-            {/*    <span className="animate-ping bg-gray-700 absolute inline-flex right-0 w-3 -top-1 h-3 rounded-full opacity-75" /> */}
-            {/*    <span className="absolute right-0 -top-1 inline-flex rounded-full h-3 w-3 bg-indigo-600" /> */}
-            {/*  </> */}
-            {/*  ) : null} */}
+            {(getNotificationsValidation)
+             || (getUserAddedToOrganization && getUserAddedToOrganization.length > 0) ? (
+               <>
+                 <span className="animate-ping bg-gray-700 absolute inline-flex right-0 w-3 -top-1 h-3 rounded-full opacity-75" />
+                 <span className="absolute right-0 -top-1 inline-flex rounded-full h-3 w-3 bg-indigo-600" />
+               </>
+              ) : null}
             <Bell className="cursor-pointer" />
           </DrawerTrigger>
           <DrawerContent className="p-5">
@@ -77,9 +82,12 @@ const BellIconWithNotificationComponent:
               <DrawerTitle className="text-indigo-600 text-2xl">Notifications</DrawerTitle>
             </DrawerHeader>
             <div className="pb-10">
+              {(getNotifications?.length === 0
+                  && getUserAddedToOrganization?.length === 0) && <NotFoundNotification />}
               {getUserAddedToOrganization && getUserAddedToOrganization.length > 0 ? (
                 getUserAddedToOrganization.map((user) => (
                   <AddedToNewOrganizationNotification
+                    key={user._id}
                     joinOrg={() => joinOrg(user._id)}
                     adminName={user?.organization?.adminName as string}
                     orgName={user?.organization?.orgName as string}
@@ -88,7 +96,16 @@ const BellIconWithNotificationComponent:
                 ))
               ) : null}
               {getNotifications && getNotifications.length > 0 ? (
-                getNotifications.map(() => (<p>xd</p>))
+                getNotifications.map((notification) => (
+                  <NewFileNotification
+                    key={notification._id}
+                    _creationTime={notification._creationTime}
+                    userId={userGoogleId}
+                    users={notification.users}
+                    id={notification._id}
+                    message={notification.message}
+                  />
+                ))
               ) : null}
             </div>
           </DrawerContent>
