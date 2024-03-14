@@ -59,3 +59,26 @@ export const getAllOrganization = query({
     return ctx.db.query('organizations').filter((q) => q.eq(q.field('adminId'), args.userId)).collect();
   },
 });
+
+export const changeOrganizationName = mutation({
+  args: {
+    organizationId: v.id('organizations'),
+    userId: v.string(),
+    orgName: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const org = await ctx.db.get(args.organizationId);
+
+    if (!org) {
+      throw new ConvexError('Could not find organization');
+    }
+
+    if (org.adminId === args.userId) {
+      await ctx.db.patch(org._id, {
+        orgName: args.orgName,
+      });
+      return true;
+    }
+    throw new ConvexError('User is not authorized to change organization name');
+  },
+});
