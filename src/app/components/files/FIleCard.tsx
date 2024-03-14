@@ -23,7 +23,7 @@ import { ConvexError } from 'convex/values';
 import { Doc } from '../../../../convex/_generated/dataModel';
 import { api } from '../../../../convex/_generated/api';
 
-const FIleCard = ({ file, favorite }: {file: Doc<'files'>; favorite: boolean}) => {
+const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite: boolean; deletedOnly: boolean}) => {
   const { data } = useSession();
   const imageUrl = getFileUrl(file.fileId);
   const addToFav = useMutation(api.favorite.addToFavorite);
@@ -83,7 +83,7 @@ const FIleCard = ({ file, favorite }: {file: Doc<'files'>; favorite: boolean}) =
           ) : (
             <Star onClick={addToFavorite} className="cursor-pointer " />
           )}
-          <FilesAction favorite={favorite} imageUrl={imageUrl} file={file} />
+          <FilesAction deletedOnly={deletedOnly} favorite={favorite} imageUrl={imageUrl} file={file} />
         </div>
       </CardHeader>
       <CardContent className="flex min-h-[200px] relative justify-center items-center">
