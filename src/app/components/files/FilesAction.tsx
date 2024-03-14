@@ -25,8 +25,11 @@ import { toast } from '@/components/ui/use-toast';
 import { Doc } from '../../../../convex/_generated/dataModel';
 import { api } from '../../../../convex/_generated/api';
 
-const FilesAction = ({ file, imageUrl, favorite }: {file: Doc<'files'>, imageUrl: string, favorite: boolean}) => {
+const FilesAction = ({
+  file, imageUrl, favorite, deletedOnly,
+}: {file: Doc<'files'>, imageUrl: string, favorite: boolean; deletedOnly: boolean}) => {
   const permDelete = useMutation(api.files.permDelete);
+  const deleteFile = useMutation(api.files.deleteFile);
   const restoreFileFromDb = useMutation(api.files.restoreFile);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -55,14 +58,25 @@ const FilesAction = ({ file, imageUrl, favorite }: {file: Doc<'files'>, imageUrl
 
   const fileDeleteFunction = async () => {
     try {
-      await permDelete({
-        id: file._id,
-        fileId: file.fileId,
-      });
-      toast({
-        variant: 'success',
-        description: 'File was moved to delete folder.',
-      });
+      if (deletedOnly) {
+        await permDelete({
+          id: file._id,
+          fileId: file.fileId,
+        });
+        toast({
+          variant: 'success',
+          description: 'File was PERMANENTLY deleted.',
+        });
+      } else {
+        await deleteFile({
+          id: file._id,
+          fileId: file.fileId,
+        });
+        toast({
+          variant: 'success',
+          description: 'File was moved to delete folder.',
+        });
+      }
     } catch (e) {
       toast({
         variant: 'destructive',
