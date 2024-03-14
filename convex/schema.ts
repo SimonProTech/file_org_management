@@ -35,7 +35,10 @@ export default defineSchema({
   }).index('by_orgId_userId_fileId', ['orgId', 'fileId', 'userId']),
   notifications: defineTable({
     orgId: v.id('organizations'),
-    userId: v.string(),
+    users: v.array(v.object({
+      id: v.string(),
+      wasRead: v.boolean(),
+    })),
     message: v.string(),
     wasRead: v.boolean(),
   }),
