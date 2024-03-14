@@ -8,3 +8,9 @@ crons.monthly(
   { day: 1, hourUTC: 16, minuteUTC: 0 }, // every minute
   internal.files.removeFileAutomatically,
 );
+
+crons.weekly(
+  'clear all notifications after 7 days if all rode it',
+  { hourUTC: 23, minuteUTC: 59, dayOfWeek: 'monday' },
+  internal.notifications.removeNotificationsAfterOneWeekIfAllUsersSaw,
+);
