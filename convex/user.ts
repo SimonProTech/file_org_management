@@ -21,6 +21,16 @@ export const createUserAndAddToOrganization = mutation({
   }),
 });
 
+export const getAllUsersAddedToOrganization = query({
+  args: {
+    orgId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const allUsersId = await ctx.db.query('user').filter((q) => q.eq(q.field('orgId'), args.orgId)).collect();
+    return allUsersId.filter((user) => user.userId);
+  },
+});
+
 export const getUserAddedToOrganization = query({
   args: {
     userEmail: v.string(),
