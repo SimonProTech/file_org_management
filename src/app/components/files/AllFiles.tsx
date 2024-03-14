@@ -83,6 +83,7 @@ const AllFiles: FC<AllFiles> = ({ deletedOnly = undefined, favorite = undefined 
                 key={file._id}
                 file={file}
                 favorite={favorite as boolean}
+                deletedOnly={deletedOnly as boolean}
               />
             ))}
           </div>
