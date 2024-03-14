@@ -20,7 +20,7 @@ import {
   FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from '@/components/ui/form';
 import useOrganization from '@/app/store/useOrg';
-import { useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { toast } from '@/components/ui/use-toast';
 import getFileMimeType from '@/lib/getFileMimeType';
 import { useSession } from 'next-auth/react';
@@ -47,6 +47,10 @@ const UploadFile = () => {
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const session = useSession();
 
+  const getAllUsersAddedToOrganization = useQuery(api.user.getAllUsersAddedToOrganization, {
+    orgId: organizationId,
+  });
+
   const form = useForm<z.infer<typeof uploadFileSchema>>({
     resolver: zodResolver(uploadFileSchema),
     defaultValues: {
@@ -60,6 +64,7 @@ const UploadFile = () => {
   async function onSubmit(values: z.infer<typeof uploadFileSchema>) {
     try {
       const postUrl = await generateUploadUrl();
+      const users: {id: string, wasRead: boolean}[] = [];
 
       const result = await fetch(postUrl, {
         method: 'POST',
@@ -79,10 +84,17 @@ const UploadFile = () => {
         type,
       });
 
+      getAllUsersAddedToOrganization?.forEach((user) => {
+        users.push({
+          wasRead: false,
+          id: user.userId,
+        });
+      });
+
       if (organizationId) {
         await createNotification({
           orgId: organizationId as Id<'organizations'>,
-          userId: session.data?.user.id as string,
+          users,
           message: 'Hey, someone has added a new file to organization you are part of.',
         });
       }
