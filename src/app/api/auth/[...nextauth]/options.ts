@@ -1,26 +1,15 @@
 import GoogleProvider from 'next-auth/providers/google';
-import { AuthOptions, Profile } from 'next-auth';
-
-interface CustomProfile extends Profile {
-  role?: string;
-}
+import { AuthOptions } from 'next-auth';
 
 const options: AuthOptions = {
   providers: [
     GoogleProvider({
       profile(profile) {
-        let role;
-
-        if (profile.email === 'applefunboy98@gmail.com') {
-          role = 'admin';
-        }
-
         return {
           id: profile.sub,
           name: profile.name,
           email: profile.email,
           image: profile.picture,
-          role,
         };
       },
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -34,7 +23,6 @@ const options: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
-        token.role = (user as CustomProfile).role;
       }
       return token;
     },
@@ -43,7 +31,6 @@ const options: AuthOptions = {
       session, token,
     }) {
       if (session.user) {
-        session.user.role = token.role as string;
         session.user.id = token.sub as string;
       }
       return session;
