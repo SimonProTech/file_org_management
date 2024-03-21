@@ -21,6 +21,8 @@ import useOrganization from '@/app/store/useOrg';
 import { useQuery } from 'convex/react';
 import HeaderIsAdminAddMembers from '@/app/components/HeaderIsAdminAddMembers';
 import BellIconWithNotificationComponent from '@/app/components/BellIconWithNotificationComponent';
+import useUser from '@/app/store/useUser';
+import { Roles } from '@/app/types/types';
 import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
 
@@ -28,9 +30,7 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
   const [sheetOpen, setSheetOpen] = useState<boolean>(false);
   const { organizationId } = useOrganization();
   const organizationDetails = useQuery(api.organization.getOrganization, { orgId: organizationId } || 'skip');
-
-  const isAdmin = organizationDetails && organizationDetails.adminId === user.id;
-
+  const { role } = useUser();
   const handleDropDownMenu = () => {
     setSheetOpen(true);
   };
@@ -41,7 +41,6 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
         adminName={user.name as string}
         image={user.image as string}
         id={user.id}
-        role={user?.role as string}
       />
       <DropdownMenu>
         <DropdownMenuTrigger>
@@ -71,12 +70,12 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
               Files
             </DropdownMenuItem>
           </Link>
-          {isAdmin ? (
+          {role === Roles.admin ? (
             <DropdownMenuItem onClick={handleDropDownMenu} className="cursor-pointer p-2 text-md gap-x-2">
               <Users2Icon size="20" />
               <span>Add members to</span>
               {' '}
-              <span className="font-bold text-indigo-600 underline">{organizationDetails.orgName}</span>
+              <span className="font-bold text-indigo-600 underline">{organizationDetails?.orgName}</span>
             </DropdownMenuItem>
           ) : null}
           <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
