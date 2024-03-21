@@ -16,11 +16,12 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatRelative } from 'date-fns';
-import { useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { useSession } from 'next-auth/react';
 import { toast } from '@/components/ui/use-toast';
 import { ConvexError } from 'convex/values';
-import { Doc } from '../../../../convex/_generated/dataModel';
+import useOrganization from '@/app/store/useOrg';
+import { Doc, Id } from '../../../../convex/_generated/dataModel';
 import { api } from '../../../../convex/_generated/api';
 
 const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite: boolean; deletedOnly: boolean}) => {
@@ -28,7 +29,7 @@ const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite
   const imageUrl = getFileUrl(file.fileId);
   const addToFav = useMutation(api.favorite.addToFavorite);
   const unfavorite = useMutation(api.favorite.unfavorite);
-
+  const { organizationId } = useOrganization();
   const fileType = {
     image: <FileImage />,
     pdf: <FileTextIcon />,
@@ -63,6 +64,12 @@ const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite
     }
   };
 
+  const isFavorite = useQuery(api.favorite.isFavorite, {
+    fileId: file.fileId as string,
+    orgId: organizationId as string,
+    userId: data?.user.id as string,
+  });
+
   const markFileAsNotFavorite = async () => {
     await unfavorite({
       fileId: file.fileId,
@@ -81,9 +88,17 @@ const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite
           {favorite ? (
             <Star onClick={markFileAsNotFavorite} className="text-yellow-400 fill-amber-500" />
           ) : (
-            <Star onClick={addToFavorite} className="cursor-pointer " />
+            <Star
+              onClick={addToFavorite}
+              className={`cursor-pointer ${isFavorite && isFavorite?.fileId === file.fileId ? 'text-yellow-400 fill-amber-500' : ''}`}
+            />
           )}
-          <FilesAction deletedOnly={deletedOnly} favorite={favorite} imageUrl={imageUrl} file={file} />
+          <FilesAction
+            deletedOnly={deletedOnly}
+            favorite={favorite}
+            imageUrl={imageUrl}
+            file={file}
+          />
         </div>
       </CardHeader>
       <CardContent className="flex min-h-[200px] relative justify-center items-center">
