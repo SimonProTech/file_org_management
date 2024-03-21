@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -16,26 +16,51 @@ import useOrganization from '@/app/store/useOrg';
 import getFileUrl from '@/lib/getUrl';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import randomColorPick from '@/lib/randomColorPick';
+import useUser from '@/app/store/useUser';
+import { Roles } from '@/app/types/types';
 import { api } from '../../../convex/_generated/api';
 import { Doc } from '../../../convex/_generated/dataModel';
 
 interface IsAdmin {
-  role: string;
   id: string;
   image: string;
   adminName: string;
 }
 
 const HeaderOrganization: FC<IsAdmin> = ({
-  role, id, image, adminName,
+  id, image, adminName,
 }) => {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const getAllOrganizations = useQuery(api.organization.getAllOrganization, {
     userId: id,
   });
+  const { organizationId } = useOrganization();
 
-  const addToCart = useOrganization((state) => state.setOrganization);
+  const setOrganization = useOrganization((state) => state.setOrganization);
+  const organizationDetails = useQuery(api.organization.getOrganization, { orgId: organizationId } || 'skip');
+  const setRole = useUser((state) => state.setRole);
+
+  const userFromDb = useQuery(api.user.getUserFromOrganization, {
+    orgId: organizationId as string,
+    userId: id,
+  });
+
+  const onValueChange = (value: string) => {
+    setOrganization(value);
+  };
+
+  useEffect(() => {
+    if (organizationDetails) {
+      if (organizationDetails?.adminId === id) {
+        setRole(Roles.admin);
+      }
+    } else if (organizationId === id) {
+      setRole(Roles.personal);
+    } else if (userFromDb) {
+      setRole(userFromDb.role);
+    }
+  }, [organizationId, id, userFromDb?.role, organizationDetails]);
 
   return (
     <>
@@ -43,7 +68,7 @@ const HeaderOrganization: FC<IsAdmin> = ({
         defaultValue=""
         open={openSelect}
         onOpenChange={setOpenSelect}
-        onValueChange={(value) => addToCart(value)}
+        onValueChange={(value) => onValueChange(value)}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select organization" />
@@ -74,19 +99,16 @@ const HeaderOrganization: FC<IsAdmin> = ({
             </div>
 
           ))}
-          {role === 'admin' ? (
-            <Button
-              className="mt-5 gap-x-2"
-              onClick={() => {
-                setOpenDialog(true);
-                setOpenSelect(false);
-              }}
-            >
-              <PlusIcon size="20" />
-              Create organization
-            </Button>
-          ) : null}
-
+          <Button
+            className="mt-5 gap-x-2"
+            onClick={() => {
+              setOpenDialog(true);
+              setOpenSelect(false);
+            }}
+          >
+            <PlusIcon size="20" />
+            Create organization
+          </Button>
         </SelectContent>
       </Select>
       {openDialog
