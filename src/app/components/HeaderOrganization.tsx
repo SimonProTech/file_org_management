@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import randomColorPick from '@/lib/randomColorPick';
 import useUser from '@/app/store/useUser';
 import { Roles } from '@/app/types/types';
+import { usePathname } from 'next/navigation';
 import { api } from '../../../convex/_generated/api';
 import { Doc } from '../../../convex/_generated/dataModel';
 
@@ -32,6 +33,7 @@ const HeaderOrganization: FC<IsAdmin> = ({
 }) => {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const pathname = usePathname();
   const getAllOrganizations = useQuery(api.organization.getAllOrganization, {
     userId: id,
   });
@@ -65,6 +67,7 @@ const HeaderOrganization: FC<IsAdmin> = ({
   return (
     <>
       <Select
+        disabled={pathname.includes('/settings')}
         defaultValue=""
         open={openSelect}
         onOpenChange={setOpenSelect}
@@ -76,7 +79,7 @@ const HeaderOrganization: FC<IsAdmin> = ({
         <SelectContent className="p-2">
           <div className="flex items-center">
             <Avatar>
-              <AvatarImage width={30} height={30} src={image} alt="@shadcn" />
+              <AvatarImage width={30} height={30} src={image} alt="Avatar" />
               <AvatarFallback className={`${randomColorPick()} text-white`}>{}</AvatarFallback>
             </Avatar>
             <SelectItem
