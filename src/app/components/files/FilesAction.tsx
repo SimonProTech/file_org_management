@@ -22,6 +22,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useMutation } from 'convex/react';
 import { toast } from '@/components/ui/use-toast';
+import useUser from '@/app/store/useUser';
+import { Roles } from '@/app/types/types';
 import { Doc } from '../../../../convex/_generated/dataModel';
 import { api } from '../../../../convex/_generated/api';
 
@@ -36,6 +38,8 @@ const FilesAction = ({
   const openView = () => {
     window.open(imageUrl, '_blank');
   };
+
+  const { role } = useUser();
 
   const restoreFile = async () => {
     try {
@@ -113,7 +117,7 @@ const FilesAction = ({
               Restore
             </DropdownMenuItem>
           )}
-          {!favorite ? (
+          {(role === Roles.admin || role === Roles.personal) && !favorite ? (
             <DropdownMenuItem
               onClick={() => {
                 setOpen(true);
