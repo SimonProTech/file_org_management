@@ -50,6 +50,21 @@ export const getUserAddedToOrganization = query({
   },
 });
 
+export const getUserFromOrganization = query({
+  args: {
+    orgId: v.string(),
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.query('user')
+      .filter((q) => q.eq(q.field('orgId'), args.orgId))
+      .filter((q) => q.eq(q.field('userId'), args.userId))
+      .filter((q) => q.eq(q.field('joinedOrg'), true))
+      .first();
+    return user;
+  },
+});
+
 export const joinOrganization = mutation({
   args: {
     objId: v.id('user'),
