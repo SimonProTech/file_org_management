@@ -1,5 +1,5 @@
 import { ConvexError, v } from 'convex/values';
-import { mutation } from './_generated/server';
+import { mutation, query } from './_generated/server';
 
 export const addToFavorite = mutation({
   args: {
@@ -43,4 +43,17 @@ export const unfavorite = mutation({
       return file;
     });
   },
+});
+
+export const isFavorite = query({
+  args: {
+    fileId: v.string(),
+    userId: v.string(),
+    orgId: v.string(),
+  },
+  handler: async (ctx, args) => ctx.db.query('favorite')
+    .filter((q) => q.eq(q.field('userId'), args.userId))
+    .filter((q) => q.eq(q.field('orgId'), args.orgId))
+    .filter((q) => q.eq(q.field('fileId'), args.fileId))
+    .first(),
 });
