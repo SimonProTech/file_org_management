@@ -60,6 +60,7 @@
     "import/extensions": ["off", {
       "extension": "off"
     }],
+    "react/require-default-props": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": "warn",
