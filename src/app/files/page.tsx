@@ -15,7 +15,7 @@ const Files = async () => {
   return (
     <div className="flex flex-col flex-1 relative">
       <FileHeader title="All files" />
-      <AllFiles />
+      <AllFiles favorite deletedOnly />
     </div>
   );
 };
