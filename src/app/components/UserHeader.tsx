@@ -78,10 +78,12 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
               <span className="font-bold text-indigo-600 underline">{organizationDetails?.orgName}</span>
             </DropdownMenuItem>
           ) : null}
-          <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
-            <SettingsIcon size="20" />
-            Settings
-          </DropdownMenuItem>
+          <Link href={`${role === Roles.admin ? `/settings/${organizationId}` : '/settings'}`}>
+            <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
+              <SettingsIcon size="20" />
+              Settings
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <HeaderLogout />
         </DropdownMenuContent>
