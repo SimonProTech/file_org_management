@@ -18,8 +18,8 @@ import useType from '@/app/store/useType';
 import { api } from '../../../../convex/_generated/api';
 
 interface AllFiles {
-  deletedOnly: boolean;
-  favorite: boolean;
+  deletedOnly?: boolean;
+  favorite?: boolean;
 }
 
 const AllFiles: FC<AllFiles> = ({ deletedOnly = undefined, favorite = undefined }) => {
