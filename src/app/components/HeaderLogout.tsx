@@ -4,14 +4,13 @@ import React from 'react';
 import { LogOut } from 'lucide-react';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 const HeaderLogout = () => {
-  const router = useRouter();
-
   const handleLogout = async () => {
-    await signOut();
-    router.push('/');
+    await signOut({
+      redirect: true,
+      callbackUrl: '/',
+    });
   };
 
   return (
