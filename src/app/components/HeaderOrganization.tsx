@@ -128,8 +128,3 @@ const HeaderOrganization: FC<IsAdmin> = ({
 };
 
 export default HeaderOrganization;
-
-// <DropdownMenuItem onClick={() => setOpenDialog(true)} className="gap-x-2 p-2 cursor-pointer">
-//               <PlusIcon size="20" />
-//               Create organization
-//             </DropdownMenuItem>
