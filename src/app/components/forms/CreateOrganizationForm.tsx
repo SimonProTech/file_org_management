@@ -78,7 +78,7 @@ const CreateOrganizationForm = ({ setOpenDialog, id, adminName }: {setOpenDialog
 
       setOpenDialog(false);
 
-      toast({
+      return toast({
         variant: 'success',
         title: 'Organization success',
         description: 'Organization created successfully',
@@ -91,7 +91,7 @@ const CreateOrganizationForm = ({ setOpenDialog, id, adminName }: {setOpenDialog
           description: error.data,
         });
       }
-      toast({
+      return toast({
         variant: 'destructive',
         title: 'Organization error',
         description: 'Organization failed, please try again later.',
