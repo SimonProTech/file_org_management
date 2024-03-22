@@ -3,6 +3,7 @@
 import React, { FC } from 'react';
 import useOrganization from '@/app/store/useOrg';
 import { useQuery } from 'convex/react';
+import { useParams } from 'next/navigation';
 import { api } from '../../../../convex/_generated/api';
 
 interface SettingsHeaderProps {
@@ -11,9 +12,10 @@ interface SettingsHeaderProps {
 
 const SettingsHeader: FC<SettingsHeaderProps> = ({ title }) => {
   const { organizationId } = useOrganization();
+  const router = useParams<{id: string}>();
 
   const getOrganization = useQuery(api.organization.getOrganization, {
-    orgId: organizationId,
+    orgId: router.id || organizationId,
   });
 
   return (
