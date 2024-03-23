@@ -1,15 +1,14 @@
-import React, { FC, Suspense } from 'react';
+import React, { FC } from 'react';
 import { fetchQuery } from 'convex/nextjs';
 import {
   Calendar, HomeIcon, LockKeyhole, Users,
 } from 'lucide-react';
 import { formatRelative } from 'date-fns';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
-import SettingName from '@/app/components/settings/SettingName';
 import { getServerSession } from 'next-auth';
 import options from '@/app/api/auth/[...nextauth]/options';
-import LoadingSkeleton from '@/app/components/common/LoadingSkeleton';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Separator } from '@/components/ui/separator';
+import AdminActionsOnSettings from '@/app/components/settings/AdminActionsOnSettings';
 import { api } from '../../../../convex/_generated/api';
 import { Doc } from '../../../../convex/_generated/dataModel';
 
@@ -33,19 +32,23 @@ const Page: FC<Params> = async ({ params }) => {
     <div className="flex flex-col relative">
       <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <div className="border-black border-2  text-black rounded-md p-3 flex items-center justify-between">
-          <HomeIcon className="text-indigo-600" size={50} />
-          <SettingName
-            organizationId={organization._id}
-            orgFounderId={organization.adminId}
-            sessionId={session?.user.id as string}
-            name={organization.orgName}
-          />
-        </div>
-        <div className="border-black border-2 text-black rounded-md p-3 flex items-center justify-between">
-          <LockKeyhole className="text-indigo-600" size={50} />
+          <HomeIcon className="text-indigo-600" size={30} />
           <HoverCard>
             <HoverCardTrigger>
-              <span className="underline font-bold cursor-pointer text-xl">
+              <span className="font-bold cursor-pointer text-xl">
+                {organization.orgName}
+              </span>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              Name of the organization.
+            </HoverCardContent>
+          </HoverCard>
+        </div>
+        <div className="border-black border-2 text-black rounded-md p-3 flex items-center justify-between">
+          <LockKeyhole className="text-indigo-600" size={30} />
+          <HoverCard>
+            <HoverCardTrigger>
+              <span className="font-bold cursor-pointer text-xl">
                 {organization.adminName}
               </span>
             </HoverCardTrigger>
@@ -55,10 +58,10 @@ const Page: FC<Params> = async ({ params }) => {
           </HoverCard>
         </div>
         <div className="border-2 border-black text-black rounded-md p-3 flex items-center justify-between">
-          <Calendar className="text-indigo-600" size={50} />
+          <Calendar className="text-indigo-600" size={30} />
           <HoverCard>
             <HoverCardTrigger>
-              <span className="underline font-bold cursor-pointer text-xl">
+              <span className="font-bold cursor-pointer text-xl">
                 {formatRelative(new Date(organization._creationTime), new Date())}
               </span>
             </HoverCardTrigger>
@@ -68,10 +71,10 @@ const Page: FC<Params> = async ({ params }) => {
           </HoverCard>
         </div>
         <div className="border-2 border-black text-black rounded-md p-3 flex items-center justify-between">
-          <Users className="text-indigo-600" size={50} />
+          <Users className="text-indigo-600" size={30} />
           <HoverCard>
             <HoverCardTrigger>
-              <span className="underline font-bold cursor-pointer text-xl">
+              <span className="font-bold cursor-pointer text-xl">
                 {allUsers.length}
               </span>
             </HoverCardTrigger>
@@ -81,9 +84,14 @@ const Page: FC<Params> = async ({ params }) => {
           </HoverCard>
         </div>
       </div>
-      <div className="">
-        <p>xd</p>
-      </div>
+      <Separator className="my-10" />
+      {organization.adminId === session?.user.id ? (
+        <AdminActionsOnSettings
+          organizationId={organization._id}
+          sessionId={session?.user.id as string}
+          name={organization.orgName}
+        />
+      ) : null}
     </div>
   );
 };
