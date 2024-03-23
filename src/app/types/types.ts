@@ -3,3 +3,8 @@ export enum Roles {
     'admin'= 'admin',
     'user'= 'user',
 }
+
+export enum AlertDialogType {
+    deleteAll = 'deleteAll',
+    deleteUser = 'deleteUser',
+}
