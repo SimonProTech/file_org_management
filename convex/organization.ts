@@ -1,5 +1,6 @@
 import { ConvexError, v } from 'convex/values';
 import { mutation, query } from './_generated/server';
+import { Id } from './_generated/dataModel';
 
 export const generateUploadUrl = mutation(async (ctx) => await ctx.storage.generateUploadUrl());
 
@@ -80,5 +81,24 @@ export const changeOrganizationName = mutation({
       return true;
     }
     throw new ConvexError('User is not authorized to change organization name');
+  },
+});
+
+export const removeOrganization = mutation({
+  args: {
+    organizationId: v.id('organizations'),
+    adminId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const org = await ctx.db.query('organizations')
+      .filter((q) => q.eq(q.field('adminId'), args.adminId))
+      .filter((q) => q.eq(q.field('_id'), args.organizationId))
+      .first();
+
+    if (org) {
+      await ctx.storage.delete(org.fileId);
+      return ctx.db.delete(org._id);
+    }
+    return false;
   },
 });
