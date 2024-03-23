@@ -23,6 +23,7 @@ import HeaderIsAdminAddMembers from '@/app/components/HeaderIsAdminAddMembers';
 import BellIconWithNotificationComponent from '@/app/components/BellIconWithNotificationComponent';
 import useUser from '@/app/store/useUser';
 import { Roles } from '@/app/types/types';
+import { useParams, usePathname } from 'next/navigation';
 import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
 
@@ -31,17 +32,21 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
   const { organizationId } = useOrganization();
   const organizationDetails = useQuery(api.organization.getOrganization, { orgId: organizationId } || 'skip');
   const { role } = useUser();
+  const path = usePathname();
+  const params = useParams<{id: string}>();
   const handleDropDownMenu = () => {
     setSheetOpen(true);
   };
 
   return (
     <div className="flex items-center gap-x-4">
-      <HeaderOrganization
-        adminName={user.name as string}
-        image={user.image as string}
-        id={user.id}
-      />
+      {path !== '/' ? (
+        <HeaderOrganization
+          adminName={user.name as string}
+          image={user.image as string}
+          id={user.id}
+        />
+      ) : null}
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Image
@@ -70,7 +75,7 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
               Files
             </DropdownMenuItem>
           </Link>
-          {role === Roles.admin ? (
+          {path !== '/' && role === Roles.admin ? (
             <DropdownMenuItem onClick={handleDropDownMenu} className="cursor-pointer p-2 text-md gap-x-2">
               <Users2Icon size="20" />
               <span>Add members to</span>
@@ -78,12 +83,14 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
               <span className="font-bold text-indigo-600 underline">{organizationDetails?.orgName}</span>
             </DropdownMenuItem>
           ) : null}
-          <Link href={`${role !== Roles.personal ? `/settings/${organizationId}` : '/settings'}`}>
-            <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
-              <SettingsIcon size="20" />
-              Settings
-            </DropdownMenuItem>
-          </Link>
+          {(path !== '/' && !path.includes('/settings')) ? (
+            <Link href={`${role !== Roles.personal ? `/settings/${organizationId}` : '/settings'}`}>
+              <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
+                <SettingsIcon size="20" />
+                Settings
+              </DropdownMenuItem>
+            </Link>
+          ) : null}
           <DropdownMenuSeparator />
           <HeaderLogout />
         </DropdownMenuContent>
