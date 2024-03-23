@@ -68,7 +68,6 @@ const HeaderOrganization: FC<IsAdmin> = ({
     <>
       <Select
         disabled={pathname.includes('/settings')}
-        defaultValue=""
         open={openSelect}
         onOpenChange={setOpenSelect}
         onValueChange={(value) => onValueChange(value)}
