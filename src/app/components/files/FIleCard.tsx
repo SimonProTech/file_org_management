@@ -21,7 +21,7 @@ import { useSession } from 'next-auth/react';
 import { toast } from '@/components/ui/use-toast';
 import { ConvexError } from 'convex/values';
 import useOrganization from '@/app/store/useOrg';
-import { Doc, Id } from '../../../../convex/_generated/dataModel';
+import { Doc } from '../../../../convex/_generated/dataModel';
 import { api } from '../../../../convex/_generated/api';
 
 const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite: boolean; deletedOnly: boolean}) => {
