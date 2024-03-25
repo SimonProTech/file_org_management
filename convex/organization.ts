@@ -1,6 +1,5 @@
 import { ConvexError, v } from 'convex/values';
 import { mutation, query } from './_generated/server';
-import { Id } from './_generated/dataModel';
 
 export const generateUploadUrl = mutation(async (ctx) => await ctx.storage.generateUploadUrl());
 
