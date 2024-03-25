@@ -87,6 +87,7 @@ const Page: FC<Params> = async ({ params }) => {
       <Separator className="my-10" />
       {organization.adminId === session?.user.id ? (
         <AdminActionsOnSettings
+          allUsers={allUsers}
           organizationId={organization._id}
           sessionId={session?.user.id as string}
           name={organization.orgName}
