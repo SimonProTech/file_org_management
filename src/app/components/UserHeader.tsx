@@ -23,7 +23,7 @@ import HeaderIsAdminAddMembers from '@/app/components/HeaderIsAdminAddMembers';
 import BellIconWithNotificationComponent from '@/app/components/BellIconWithNotificationComponent';
 import useUser from '@/app/store/useUser';
 import { Roles } from '@/app/types/types';
-import { useParams, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
 
@@ -33,7 +33,6 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
   const organizationDetails = useQuery(api.organization.getOrganization, { orgId: organizationId } || 'skip');
   const { role } = useUser();
   const path = usePathname();
-  const params = useParams<{id: string}>();
   const handleDropDownMenu = () => {
     setSheetOpen(true);
   };
@@ -58,19 +57,29 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-96  z-[99999] relative">
-          <DropdownMenuLabel className="p-2 text-md">
-            Personal
-            {' '}
-            <span className="font-bold text-indigo-600 underline">{user?.name}</span>
-            {' '}
-            account
-          </DropdownMenuLabel>
-          <div className="p-2">
-            <span className="text-[14px] text-indigo-600 font-bold">{user?.email}</span>
-          </div>
+          {organizationId === user.id ? (
+            <DropdownMenuLabel className="p-2 text-md">
+              Personal
+              {' '}
+              <span className="font-bold text-indigo-600 underline">{user?.name}</span>
+              {' '}
+              account
+            </DropdownMenuLabel>
+          ) : (
+            <DropdownMenuLabel className="p-2 text-md">
+              Business account -
+              {' '}
+              <span className="font-bold cursor-default text-indigo-600 underline">{organizationDetails?.orgName}</span>
+            </DropdownMenuLabel>
+          )}
+          {!organizationDetails ? (
+            <div className="p-2">
+              <span className="text-[14px] text-indigo-600 font-bold">{user?.email}</span>
+            </div>
+          ) : null}
           <DropdownMenuSeparator />
           <Link href="/files">
-            <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
+            <DropdownMenuItem className={`${path === '/files' && 'active-path'} cursor-pointer p-2 text-md gap-x-2`}>
               <File size="20" />
               Files
             </DropdownMenuItem>
@@ -83,8 +92,8 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
               <span className="font-bold text-indigo-600 underline">{organizationDetails?.orgName}</span>
             </DropdownMenuItem>
           ) : null}
-          {(path !== '/' && !path.includes('/settings')) ? (
-            <Link href={`${role !== Roles.personal ? `/settings/${organizationId}` : '/settings'}`}>
+          {(path !== '/' && !path.includes('/settings')) && role !== Roles.personal ? (
+            <Link href={`/settings/${organizationId}`}>
               <DropdownMenuItem className="cursor-pointer p-2 text-md gap-x-2">
                 <SettingsIcon size="20" />
                 Settings
