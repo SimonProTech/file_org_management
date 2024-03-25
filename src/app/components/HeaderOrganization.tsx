@@ -13,12 +13,12 @@ import HeaderCreateOrganization from '@/app/components/HeaderCreateOrganization'
 import { useQuery } from 'convex/react';
 import { Button } from '@/components/ui/button';
 import useOrganization from '@/app/store/useOrg';
-import getFileUrl from '@/lib/getUrl';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import randomColorPick from '@/lib/randomColorPick';
 import useUser from '@/app/store/useUser';
 import { Roles } from '@/app/types/types';
 import { usePathname } from 'next/navigation';
+import HeaderAvatar from '@/app/components/HeaderAvatar';
 import { api } from '../../../convex/_generated/api';
 import { Doc } from '../../../convex/_generated/dataModel';
 
@@ -42,6 +42,7 @@ const HeaderOrganization: FC<IsAdmin> = ({
   const setOrganization = useOrganization((state) => state.setOrganization);
   const organizationDetails = useQuery(api.organization.getOrganization, { orgId: organizationId } || 'skip');
   const setRole = useUser((state) => state.setRole);
+  //
 
   const userFromDb = useQuery(api.user.getUserFromOrganization, {
     orgId: organizationId as string,
@@ -97,18 +98,7 @@ const HeaderOrganization: FC<IsAdmin> = ({
             </SelectItem>
           </div>
           {getAllOrganizations && (getAllOrganizations as Doc<'organizations'>[])?.map(({ orgName, _id, fileId }) => (
-            <div key={_id} className="flex items-center mt-2">
-              <Avatar>
-                <AvatarImage width={30} height={30} src={getFileUrl(fileId)} alt="@shadcn" />
-                <AvatarFallback className={`${randomColorPick()} text-white`}>{orgName.slice(0, 2)}</AvatarFallback>
-              </Avatar>
-              <SelectItem
-                value={_id}
-              >
-                {orgName}
-              </SelectItem>
-            </div>
-
+            <HeaderAvatar fileId={fileId} orgName={orgName} id={_id} />
           ))}
           <Button
             className="mt-5 gap-x-2"
