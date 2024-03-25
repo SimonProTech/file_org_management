@@ -8,11 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import getFileUrl from '@/lib/getUrl';
 import Image from 'next/image';
 import FilesAction from '@/app/components/files/FilesAction';
 import {
-  File, FileHeart, FileImage, FileSpreadsheet, FileTextIcon, GanttChartIcon, ImageIcon, Star,
+  File,
+  FileHeart, FileImage, FileSpreadsheet, FileTextIcon, GanttChartIcon, ImageIcon, Loader2, Star,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatRelative } from 'date-fns';
@@ -26,7 +26,9 @@ import { api } from '../../../../convex/_generated/api';
 
 const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite: boolean; deletedOnly: boolean}) => {
   const { data } = useSession();
-  const imageUrl = getFileUrl(file.fileId);
+  const imageUrl = useQuery(api.files.getFileUrl, {
+    storageId: file.fileId,
+  });
   const addToFav = useMutation(api.favorite.addToFavorite);
   const unfavorite = useMutation(api.favorite.unfavorite);
   const { organizationId } = useOrganization();
@@ -96,19 +98,23 @@ const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite
           <FilesAction
             deletedOnly={deletedOnly}
             favorite={favorite}
-            imageUrl={imageUrl}
+            imageUrl={imageUrl as string}
             file={file}
           />
         </div>
       </CardHeader>
       <CardContent className="flex min-h-[200px] relative justify-center items-center">
         {file.type === 'image' && (
-        <Image
-          alt={file.fileName}
-          fill
-          src={imageUrl}
-          style={{ objectFit: 'contain' }}
-        />
+          !imageUrl ? (
+            <Loader2 size={90} className="animate-spin" />
+          ) : (
+            <Image
+              alt={file.fileName}
+              fill
+              src={imageUrl as string}
+              style={{ objectFit: 'contain' }}
+            />
+          )
         )}
         {file.type === 'svg' && <FileHeart className="w-20 h-32" />}
         {file.type === 'pdf' && <FileTextIcon className="w-20 h-32" />}
