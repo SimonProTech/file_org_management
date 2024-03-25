@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 
 export const createUserAndAddToOrganization = mutation({
@@ -76,4 +76,24 @@ export const joinOrganization = mutation({
     userId: args.userId,
     userImage: args.userImage,
   }),
+});
+
+export const removeUser = mutation({
+  args: {
+    adminId: v.string(),
+    userId: v.id('user'),
+    orgId: v.id('organizations'),
+  },
+  handler: async (ctx, args) => {
+    const organization = ctx.db.query('organizations')
+      .filter((q) => q.eq(q.field('adminId'), args.adminId))
+      .filter((q) => q.eq(q.field('_id'), args.orgId))
+      .first();
+
+    if (!organization) {
+      throw new ConvexError('You cannot remove user from organization');
+    }
+
+    return ctx.db.delete(args.userId);
+  },
 });
