@@ -118,4 +118,11 @@ export const filesType = query({
   },
 });
 
+export const getFileUrl = query({
+  args: {
+    storageId: v.id('_storage'),
+  },
+  handler: async (ctx, args) => ctx.storage.getUrl(args.storageId),
+});
+
 export const generateUploadUrl = mutation(async (ctx) => await ctx.storage.generateUploadUrl());
