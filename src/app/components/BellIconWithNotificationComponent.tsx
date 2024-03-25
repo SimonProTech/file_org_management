@@ -81,7 +81,7 @@ const BellIconWithNotificationComponent:
             <DrawerHeader className="px-0">
               <DrawerTitle className="text-indigo-600 text-2xl">Notifications</DrawerTitle>
             </DrawerHeader>
-            <div className="pb-10">
+            <div className="pb-10 max-h-52 pr-5 pt-5 overflow-y-scroll">
               {(getNotifications?.length === 0
                   && getUserAddedToOrganization?.length === 0) && <NotFoundNotification />}
               {getUserAddedToOrganization && getUserAddedToOrganization.length > 0 ? (
