@@ -35,7 +35,8 @@ export const getNotifications = query({
       .order('desc')
       .collect();
 
-    const hasUnreadNotifications = notifications.filter((x) => x.users.some((d) => d.id === args.userId));
+    const hasUnreadNotifications = notifications
+      .filter((x) => x.users.some((d) => d.id === args.userId));
 
     return hasUnreadNotifications;
   },
