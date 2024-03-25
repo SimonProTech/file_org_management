@@ -102,6 +102,16 @@
   .cancel-button-user-admin {
     margin-top: 10px !important;
   }
+
+
+  .active-path {
+    background: rgb(79 70 229);
+    color: white;
+  }
+  .active-path:hover {
+    background: rgb(79 70 229) !important;
+    color: white !important;
+  }
 }
 
 
