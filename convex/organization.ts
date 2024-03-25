@@ -20,6 +20,14 @@ export const createOrg = mutation({
       throw new ConvexError('Organization already exists');
     }
 
+    const checkHowManyOrgsBelongToUser = await ctx.db.query('organizations')
+      .filter((q) => q.eq(q.field('adminId'), args.adminId))
+      .collect();
+
+    if (checkHowManyOrgsBelongToUser.length >= 2) {
+      throw new ConvexError('Reached too many organizations. You can only have two organizations.');
+    }
+
     await ctx.db.insert('organizations', {
       orgName: args.orgName,
       fileId: args.fileId,
