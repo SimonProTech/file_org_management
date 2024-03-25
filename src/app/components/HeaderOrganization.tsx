@@ -48,19 +48,28 @@ const HeaderOrganization: FC<IsAdmin> = ({
     userId: id,
   });
 
+  useEffect(() => {
+    setOrganization(id);
+  }, []);
+
   const onValueChange = (value: string) => {
     setOrganization(value);
   };
 
   useEffect(() => {
+    if (userFromDb) {
+      setRole(userFromDb.role);
+    }
+  }, [userFromDb]);
+
+  useEffect(() => {
     if (organizationDetails) {
       if (organizationDetails?.adminId === id) {
-        setRole(Roles.admin);
+        return setRole(Roles.admin);
       }
-    } else if (organizationId === id) {
-      setRole(Roles.personal);
-    } else if (userFromDb) {
-      setRole(userFromDb.role);
+    }
+    if (id === organizationId) {
+      return setRole(Roles.personal);
     }
   }, [organizationId, id, userFromDb?.role, organizationDetails]);
 
