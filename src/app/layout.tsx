@@ -1,12 +1,10 @@
 import type { Metadata } from 'next';
-import { Lato } from 'next/font/google';
 import './globals.css';
 import ConvexClientProvider from '@/app/ConvexClientProvider';
 import SessionWrapper from '@/app/SessionWrapper';
 import Header from '@/app/components/Header';
 import { Toaster } from '@/components/ui/toaster';
-
-const lato = Lato({ weight: ['300', '400', '700'], subsets: ['latin'] });
+import { asap, lato } from '@/app/fonts';
 
 export const metadata: Metadata = {
   icons: {
@@ -24,7 +22,7 @@ export default function RootLayout({
   return (
     <SessionWrapper>
       <html lang="en">
-        <body className={`${lato.className}`}>
+        <body className={`${lato.variable} ${asap.variable} font-inter`}>
           <ConvexClientProvider>
             <Header />
             {children}
