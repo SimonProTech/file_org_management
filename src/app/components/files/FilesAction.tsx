@@ -95,7 +95,7 @@ const FilesAction = ({
         <DropdownMenuTrigger><MoreVertical /></DropdownMenuTrigger>
         <DropdownMenuContent className="p-2">
           {!file.shouldBeDeleted ? (
-            <DropdownMenuItem className="gap-x-2 font-medium mb-2 cursor-pointer">
+            <DropdownMenuItem onClick={() => window.open(imageUrl)} className="gap-x-2 font-medium mb-2 cursor-pointer">
               <Eye className="text-indigo-600" />
               View
             </DropdownMenuItem>
