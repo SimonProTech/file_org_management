@@ -73,10 +73,21 @@ const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite
   });
 
   const markFileAsNotFavorite = async () => {
-    await unfavorite({
-      fileId: file.fileId,
-      orgId: file.orgId,
-    });
+    try {
+      await unfavorite({
+        fileId: file.fileId,
+        orgId: file.orgId,
+      });
+      toast({
+        variant: 'success',
+        description: 'File was removed from favorites',
+      });
+    } catch (e) {
+      toast({
+        variant: 'destructive',
+        description: 'There was an error while removing from favorites',
+      });
+    }
   };
 
   return (
@@ -88,11 +99,11 @@ const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite
         </CardTitle>
         <div className="flex items-center gap-x-2">
           {favorite ? (
-            <Star onClick={markFileAsNotFavorite} className="text-yellow-400 fill-amber-500" />
+            <Star onClick={markFileAsNotFavorite} className="text-yellow-400 cursor-pointer fill-amber-500" />
           ) : (
             <Star
               onClick={addToFavorite}
-              className={`cursor-pointer ${isFavorite && isFavorite?.fileId === file.fileId ? 'text-yellow-400 fill-amber-500' : ''}`}
+              className={`${isFavorite && isFavorite?.fileId === file.fileId ? 'text-yellow-400 fill-amber-500 cursor-not-allowed' : 'cursor-pointer'}`}
             />
           )}
           <FilesAction
