@@ -56,7 +56,7 @@ const UserHeader: FC<Pick<Session, 'user'>> = ({ user }) => {
             alt="google user icon"
           />
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-96  z-[99999] relative">
+        <DropdownMenuContent className="w-96 z-[99999] relative">
           {organizationId === user.id ? (
             <DropdownMenuLabel className="p-2 text-md">
               Personal
