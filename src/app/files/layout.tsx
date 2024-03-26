@@ -8,7 +8,7 @@ export default function FilesRootLayout({
 }>) {
   return (
     <div className="pt-32 mx-auto w-full p-12">
-      <div className="flex gap-x-10">
+      <div className="flex lg:flex-row flex-col gap-x-10">
         <Controllers />
         {children}
       </div>
