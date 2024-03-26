@@ -10,7 +10,7 @@ const Controllers = () => {
   const path = usePathname();
 
   return (
-    <div className="flex flex-col w-60 gap-4">
+    <div className="flex lg:flex-col lg:pb-0 pb-12 lg:justify-start justify-center flex-row w-full lg:w-60 gap-4">
       <Link href="/files">
         <Button className={`flex ${path === '/files' ? 'text-indigo-600 font-bold' : ''} gap-4 text-lg hover:no-underline items-center`} variant="link">
           <File size="25" />
