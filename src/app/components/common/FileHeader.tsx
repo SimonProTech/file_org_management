@@ -12,8 +12,8 @@ interface FileHeaderProps {
 const FileHeader: FC<FileHeaderProps> = ({ title }) => {
   const path = usePathname();
   return (
-    <div className="flex justify-between p-1 w-full mb-10">
-      <h1 className="text-black font-bold text-5xl">{title}</h1>
+    <div className="flex lg:flex-row flex-col justify-between p-1 w-full mb-10">
+      <h1 className="text-black lg:mb-0 mb-10 font-bold text-5xl">{title}</h1>
       <div className="flex items-center gap-x-20">
         <FilesTypes />
         {path === '/files' ? <UploadFile /> : null}
