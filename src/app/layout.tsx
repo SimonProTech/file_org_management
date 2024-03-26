@@ -5,6 +5,7 @@ import SessionWrapper from '@/app/SessionWrapper';
 import Header from '@/app/components/Header';
 import { Toaster } from '@/components/ui/toaster';
 import { asap, lato } from '@/app/fonts';
+import BuyMeACoffee from '@/app/components/common/BuyMeACoffee';
 
 export const metadata: Metadata = {
   icons: {
@@ -27,6 +28,7 @@ export default function RootLayout({
             <Header />
             {children}
           </ConvexClientProvider>
+          <BuyMeACoffee />
           <Toaster />
         </body>
       </html>
