@@ -120,7 +120,7 @@ const UploadFile = () => {
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="default">Upload file</Button>
+        <Button className="md:w-max w-full" variant="default">Upload file</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

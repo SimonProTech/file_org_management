@@ -22,9 +22,9 @@ const FilesTypes = () => {
   const setType = useType((state) => state.setType);
 
   return (
-    <div>
+    <div className="w-full">
       <Select onValueChange={setType}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full md:w-[180px]">
           <SelectValue placeholder="Select a file type" />
         </SelectTrigger>
         <SelectContent>

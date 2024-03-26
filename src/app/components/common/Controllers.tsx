@@ -10,22 +10,22 @@ const Controllers = () => {
   const path = usePathname();
 
   return (
-    <div className="flex lg:flex-col lg:pb-0 pb-12 lg:justify-start justify-center flex-row w-full lg:w-60 gap-4">
-      <Link href="/files">
+    <div className="flex lg:flex-col flex-col md:flex-row lg:pb-0 pb-12  lg:justify-start justify-center w-full lg:w-60 gap-4">
+      <Link className="md:border-none md:border-black border-2 border-black rounded-xl" href="/files">
         <Button className={`flex ${path === '/files' ? 'text-indigo-600 font-bold' : ''} gap-4 text-lg hover:no-underline items-center`} variant="link">
           <File size="25" />
           {' '}
           All files
         </Button>
       </Link>
-      <Link href="/files/favorites">
+      <Link className="md:border-none md:border-black border-2 border-black rounded-xl" href="/files/favorites">
         <Button className={`flex ${path.includes('/favorites') ? 'text-indigo-600 font-bold' : ''} gap-4 hover:no-underline items-center text-lg`} variant="link">
           <Star size="25" />
           {' '}
           Favorites
         </Button>
       </Link>
-      <Link href="/files/bin">
+      <Link className="md:border-none md:border-black border-2 border-black rounded-xl" href="/files/bin">
         <Button className={`flex ${path.includes('/bin') ? 'text-indigo-600 font-bold' : ''} gap-4 hover:no-underline items-center text-lg`} variant="link">
           <Trash size="25" />
           {' '}

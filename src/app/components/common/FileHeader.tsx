@@ -14,7 +14,7 @@ const FileHeader: FC<FileHeaderProps> = ({ title }) => {
   return (
     <div className="flex lg:flex-row flex-col justify-between p-1 w-full mb-10">
       <h1 className="text-black lg:mb-0 mb-10 font-bold text-5xl">{title}</h1>
-      <div className="flex items-center gap-x-20">
+      <div className="flex flex-col md:flex-row gap-y-4 items-center gap-x-20">
         <FilesTypes />
         {path === '/files' ? <UploadFile /> : null}
       </div>
