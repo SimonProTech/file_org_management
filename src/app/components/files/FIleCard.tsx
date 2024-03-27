@@ -101,10 +101,15 @@ const FIleCard = ({ file, favorite, deletedOnly }: {file: Doc<'files'>; favorite
           {favorite ? (
             <Star onClick={markFileAsNotFavorite} className="text-yellow-400 cursor-pointer fill-amber-500" />
           ) : (
-            <Star
-              onClick={addToFavorite}
-              className={`${isFavorite && isFavorite?.fileId === file.fileId ? 'text-yellow-400 fill-amber-500 cursor-not-allowed' : 'cursor-pointer'}`}
-            />
+            isFavorite === undefined ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <Star
+                onClick={addToFavorite}
+                className={`${isFavorite && isFavorite?.fileId === file.fileId ? 'text-yellow-400 fill-amber-500 cursor-not-allowed' : 'cursor-pointer'}`}
+              />
+            )
+
           )}
           <FilesAction
             deletedOnly={deletedOnly}
