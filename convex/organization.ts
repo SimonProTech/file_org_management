@@ -51,20 +51,25 @@ export const getAllOrganization = query({
     userId: v.string(),
   },
   handler: async (ctx, args) => {
-    const users = await ctx.db.query('user').filter((q) => q.eq(q.field('userId'), args.userId)).filter((q) => q.eq(q.field('joinedOrg'), true)).collect();
+    const users = await ctx.db.query('user')
+      .filter((q) => q.eq(q.field('userId'), args.userId))
+      .filter((q) => q.eq(q.field('joinedOrg'), true))
+      .collect();
 
-    const orgIds = users.map((user) => user.orgId);
-    const uniqueOrgIds = [...new Set(orgIds)];
+    const orgIds = [...new Set(users.map((user) => user.orgId))];
 
-    const organizations = await Promise.all(uniqueOrgIds.map(async (orgId) => {
-      const org = await ctx.db.query('organizations').filter((q) => q.eq(q.field('_id'), orgId)).first();
+    const userOrganizations = await Promise.all(orgIds.map(async (orgId) => {
+      const org = await ctx.db.query('organizations')
+        .filter((q) => q.eq(q.field('_id'), orgId))
+        .first();
       return org;
     }));
 
-    if (organizations.length > 0) {
-      return organizations.filter((org) => org !== undefined);
-    }
-    return ctx.db.query('organizations').filter((q) => q.eq(q.field('adminId'), args.userId)).collect();
+    const adminOrganizations = await ctx.db.query('organizations')
+      .filter((q) => q.eq(q.field('adminId'), args.userId))
+      .collect();
+
+    return [...userOrganizations, ...adminOrganizations];
   },
 });
 
