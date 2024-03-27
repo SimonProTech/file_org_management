@@ -98,7 +98,7 @@ const HeaderOrganization: FC<IsAdmin> = ({
             </SelectItem>
           </div>
           {getAllOrganizations && (getAllOrganizations as Doc<'organizations'>[])?.map(({ orgName, _id, fileId }) => (
-            <HeaderAvatar fileId={fileId} orgName={orgName} id={_id} />
+            <HeaderAvatar key={_id} fileId={fileId} orgName={orgName} id={_id} />
           ))}
           <Button
             className="mt-5 gap-x-2"
