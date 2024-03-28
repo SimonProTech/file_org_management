@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import { fetchQuery } from 'convex/nextjs';
 import {
   Calendar, HomeIcon, LockKeyhole, Users,
@@ -9,6 +9,8 @@ import { getServerSession } from 'next-auth';
 import options from '@/app/api/auth/[...nextauth]/options';
 import { Separator } from '@/components/ui/separator';
 import AdminActionsOnSettings from '@/app/components/settings/AdminActionsOnSettings';
+import { redirect } from 'next/navigation';
+import LoadingSkeleton from '@/app/components/common/LoadingSkeleton';
 import { api } from '../../../../convex/_generated/api';
 import { Doc } from '../../../../convex/_generated/dataModel';
 
@@ -20,6 +22,11 @@ interface Params {
 
 const Page: FC<Params> = async ({ params }) => {
   const session = await getServerSession(options);
+
+  if (!session) {
+    redirect('/');
+  }
+
   const organization = await fetchQuery(api.organization.getOrganization, {
     orgId: params.id,
   }) as Doc<'organizations'>;
@@ -86,12 +93,15 @@ const Page: FC<Params> = async ({ params }) => {
       </div>
       <Separator className="my-10" />
       {organization.adminId === session?.user.id ? (
-        <AdminActionsOnSettings
-          allUsers={allUsers}
-          organizationId={organization._id}
-          sessionId={session?.user.id as string}
-          name={organization.orgName}
-        />
+        <Suspense fallback={<LoadingSkeleton className="odd:col-start-1" />}>
+          <AdminActionsOnSettings
+            allUsers={allUsers}
+            organizationId={organization._id}
+            fileId={organization.fileId}
+            sessionId={session?.user.id as string}
+            name={organization.orgName}
+          />
+        </Suspense>
       ) : null}
     </div>
   );
