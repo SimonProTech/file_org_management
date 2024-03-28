@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <SessionWrapper>
       <html lang="en">
-        <body className={`${lato.variable} ${asap.variable} font-inter`}>
+        <body className={`${lato.variable} ${asap.variable} font-inter cursor-default`}>
           <ConvexClientProvider>
             <Header />
             {children}
