@@ -114,3 +114,26 @@ export const removeOrganization = mutation({
     return false;
   },
 });
+
+export const updateImageOrganization = mutation({
+  args: {
+    organizationId: v.id('organizations'),
+    adminId: v.string(),
+    fileId: v.id('_storage'),
+  },
+  handler: async (ctx, args) => {
+    const organization = await ctx.db.get(args.organizationId);
+
+    if (!organization) {
+      throw new ConvexError('Organization not found.');
+    }
+
+    if (organization.adminId !== args.adminId) {
+      throw new ConvexError('You are not allowed to change org. image.');
+    }
+
+    return ctx.db.patch(organization._id, {
+      fileId: args.fileId,
+    });
+  },
+});
